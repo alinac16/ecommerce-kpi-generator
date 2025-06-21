@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI KPI Generator for E-commerce</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Removed Tailwind CDN and replaced with local CSS link -->
+    <link href="./dist/output.css" rel="stylesheet"> 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* These base styles remain as they are not directly Tailwind utility classes */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f0f2f5;
@@ -34,9 +36,8 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Custom styles for elements, using Tailwind utilities where applicable */
+        /* Custom styles that map to Tailwind utilities (these would be compiled into output.css) */
 
-        /* Generic hidden class for display:none control */
         .hidden {
             display: none !important;
         }
