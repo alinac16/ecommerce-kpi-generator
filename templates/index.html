@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI KPI Generator for E-commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            color: #2d3748;
+        }
+        .container {
+            max-width: 800px;
+            margin: 2.5rem auto;
+            padding: 2.5rem;
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-left-color: #ffffff;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Custom styles for checkboxes grid */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted width to better fit details */
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.75rem;
+            background-color: #edf2f7;
+            max-height: 400px; /* Increased height to accommodate more details */
+            overflow-y: auto;
+            box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+        .checkbox-item {
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            align-items: flex-start; /* Align content to the left */
+            padding: 0.8rem 1rem; /* More padding */
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.15s ease-in-out;
+        }
+        .checkbox-item:hover {
+            border-color: #6366f1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transform: translateY(-2px);
+        }
+        .checkbox-item-header {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 0.5rem; /* Space below header */
+        }
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 0.75rem;
+            width: 1.35rem;
+            height: 1.35rem;
+            border-radius: 0.35rem;
+            border-color: #94a3b8;
+            accent-color: #3b82f6;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .checkbox-item label {
+            flex-grow: 1;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: #374151;
+            font-weight: 600; /* Bolder KPI name */
+        }
+        .toggle-details-btn {
+            @apply ml-auto px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition duration-150 ease-in-out;
+        }
+        .kpi-details {
+            width: 100%;
+            font-size: 0.85rem;
+            color: #4a5568; /* darker gray */
+            padding-top: 0.5rem;
+            border-top: 1px dashed #e2e8f0;
+            margin-top: 0.5rem;
+            display: none; /* Hidden by default */
+        }
+        .kpi-details.active {
+            display: block; /* Shown when active */
+        }
+        .kpi-details p {
+            margin-bottom: 0.4rem;
+        }
+        .kpi-details strong {
+            color: #2d3748; /* Even darker for emphasis */
+        }
+        /* General button styles for reusability */
+        .btn {
+            @apply inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-semibold rounded-lg shadow-md text-white transition duration-200 ease-in-out transform;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+        }
+        .btn:disabled {
+            @apply cursor-not-allowed bg-gradient-to-br from-gray-400 to-gray-500 hover:from-gray-400 hover:to-gray-500 shadow-sm;
+            transform: none;
+        }
+        /* Specific button styles */
+        .btn-blue {
+            @apply bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-xl;
+        }
+        .btn-green {
+            @apply bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-xl;
+        }
+        .btn-gray {
+            @apply bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4">
+    <div class="container">
+        <!-- Logo Added Here -->
+        <div class="flex justify-center mb-6">
+            <img src="https://nanacoffeeroasters.com/cdn/shop/files/nana_coffee_roasters_logo_280x.png?v=1613160486" alt="Nana Coffee Roasters Logo" class="h-20 w-auto object-contain">
+        </div>
+        <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-8">✨ AI KPI Generator for E-commerce ✨</h1>
+
+        <div class="mb-6">
+            <label for="csvFile" class="flex flex-col items-center justify-center max-w-md mx-auto py-4 px-6 border-2 border-dashed border-blue-400 rounded-lg text-blue-700 font-semibold text-lg cursor-pointer bg-blue-50 hover:bg-blue-100 hover:border-blue-500 transition duration-200 ease-in-out shadow-md hover:-translate-y-0.5">
+                <span class="font-bold">Upload E-commerce CSV Data</span>
+                <p class="text-sm text-gray-600 mt-1">Click here to select your order data (CSV)</p>
+                <input type="file" id="csvFile" accept=".csv" class="hidden">
+            </label>
+        </div>
+
+        <div class="mb-6" id="kpiSuggestionsSection" style="display:none;">
+            <label class="block text-base font-medium text-gray-700 mb-3">AI Suggested KPIs (Select to Calculate):</label>
+            <div id="kpiCheckboxes" class="checkbox-grid">
+                <!-- KPI checkboxes will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="mb-6 mt-8 flex justify-center">
+            <button id="generateKpiExcelBtn"
+                    class="inline-flex items-center justify-center px-8 py-3.5 border border-transparent text-lg font-extrabold rounded-lg shadow-xl text-white uppercase tracking-wide
+                           bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
+                           hover:-translate-y-0.5 active:translate-y-0 active:shadow-inner
+                           disabled:cursor-not-allowed disabled:bg-gradient-to-br disabled:from-gray-400 disabled:to-gray-500 disabled:hover:from-gray-400 disabled:hover:to-gray-500 disabled:shadow-sm disabled:transform-none
+                           transition duration-200 ease-in-out transform max-w-sm"
+                    disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-3">
+                    <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.292-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.007Z" clip-rule="evenodd" />
+                </svg>
+                <span id="generateKpiText">Calculate KPIs & Generate Excel</span>
+                <div id="generateKpiSpinner" class="spinner ml-3" style="display:none;"></div>
+            </button>
+        </div>
+
+        <div class="mb-6 mt-8" id="statusMessageContainer" style="display:none;">
+            <p id="statusMessage" class="text-center text-gray-700"></p>
+        </div>
+    </div>
+
+    <script type="module">
+        // Backend Proxy Server URL (Update this when you deploy your Flask app!)
+        // For local development, it's typically http://127.0.0.1:5000
+        const BACKEND_PROXY_URL = "http://127.0.0.1:5000";
+
+        // Global variable to store CSV content after upload
+        let rawCsvContent = null;
+
+        // --- DOM Elements ---
+        const csvFileInput = document.getElementById('csvFile');
+        const kpiSuggestionsSection = document.getElementById('kpiSuggestionsSection');
+        const kpiCheckboxesDiv = document.getElementById('kpiCheckboxes');
+        const generateKpiExcelBtn = document.getElementById('generateKpiExcelBtn');
+        const generateKpiText = document.getElementById('generateKpiText');
+        const generateKpiSpinner = document.getElementById('generateKpiSpinner');
+        const statusMessageContainer = document.getElementById('statusMessageContainer');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // --- Event Listeners ---
+        csvFileInput.addEventListener('change', handleFileSelect);
+        kpiCheckboxesDiv.addEventListener('change', updateGenerateKpiButtonState);
+        generateKpiExcelBtn.addEventListener('click', generateKpiExcel);
+
+        // --- Functions ---
+
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            // Reset UI
+            kpiSuggestionsSection.style.display = 'none';
+            kpiCheckboxesDiv.innerHTML = '';
+            generateKpiExcelBtn.disabled = true;
+            statusMessageContainer.style.display = 'none';
+            statusMessage.textContent = '';
+            rawCsvContent = null; // Clear previous CSV content
+
+            generateKpiText.textContent = 'Analyzing Headers...';
+            generateKpiSpinner.style.display = 'inline-block';
+            generateKpiExcelBtn.disabled = true; // Disable until analysis is done
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                rawCsvContent = e.target.result;
+                const firstLine = rawCsvContent.split('\n')[0];
+                const headers = firstLine.split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+
+                try {
+                    // Send headers to backend for KPI suggestions
+                    const response = await fetch(`${BACKEND_PROXY_URL}/suggest-kpis`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ headers: headers })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`Backend error: ${errorData.error || response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    const suggestedKpis = result.kpis; // This now expects an array of objects
+
+                    if (suggestedKpis && suggestedKpis.length > 0) {
+                        // Populate KPI checkboxes with new details
+                        suggestedKpis.forEach((kpi, index) => {
+                            const checkboxItemDiv = document.createElement('div');
+                            checkboxItemDiv.className = 'checkbox-item'; // Use base class for item styling
+
+                            const headerDiv = document.createElement('div');
+                            headerDiv.className = 'checkbox-item-header'; // New class for flex header
+
+                            const checkboxInput = document.createElement('input');
+                            checkboxInput.type = 'checkbox';
+                            checkboxInput.id = `kpi-${index}`; // Use index for unique ID
+                            checkboxInput.value = kpi.name; // Use KPI name as value
+                            checkboxInput.name = 'kpi';
+                            checkboxInput.className = 'mr-3 w-5 h-5 rounded-md border-gray-400 accent-blue-500 cursor-pointer flex-shrink-0';
+
+                            const checkboxLabel = document.createElement('label');
+                            checkboxLabel.htmlFor = `kpi-${index}`;
+                            checkboxLabel.textContent = kpi.name; // Display KPI name
+                            checkboxLabel.className = 'flex-grow cursor-pointer text-[0.95rem] text-gray-700 font-medium';
+
+                            const toggleBtn = document.createElement('button');
+                            toggleBtn.className = 'toggle-details-btn';
+                            toggleBtn.textContent = 'Show Details';
+                            toggleBtn.onclick = function(e) {
+                                e.preventDefault(); // Prevent checkbox from being toggled if button is inside label
+                                e.stopPropagation(); // Stop event from bubbling to parent checkbox/label
+                                const detailsDiv = this.closest('.checkbox-item').querySelector('.kpi-details');
+                                detailsDiv.classList.toggle('active');
+                                this.textContent = detailsDiv.classList.contains('active') ? 'Hide Details' : 'Show Details';
+                            };
+
+                            headerDiv.appendChild(checkboxInput);
+                            headerDiv.appendChild(checkboxLabel);
+                            headerDiv.appendChild(toggleBtn);
+                            checkboxItemDiv.appendChild(headerDiv);
+
+                            // Details section (collapsible)
+                            const detailsDiv = document.createElement('div');
+                            detailsDiv.className = 'kpi-details'; // Hidden by default via CSS
+
+                            const equationP = document.createElement('p');
+                            equationP.innerHTML = `<strong>Equation:</strong> <code class="bg-gray-100 text-gray-800 px-1 py-0.5 rounded">${kpi.equation}</code>`;
+                            detailsDiv.appendChild(equationP);
+
+                            const engDescP = document.createElement('p');
+                            engDescP.innerHTML = `<strong>English:</strong> ${kpi.english_description}`;
+                            detailsDiv.appendChild(engDescP);
+
+                            const thaiDescP = document.createElement('p');
+                            thaiDescP.innerHTML = `<strong>ภาษาไทย:</strong> ${kpi.thai_description}`;
+                            detailsDiv.appendChild(thaiDescP);
+
+                            checkboxItemDiv.appendChild(detailsDiv);
+                            kpiCheckboxesDiv.appendChild(checkboxItemDiv);
+                        });
+                        kpiSuggestionsSection.style.display = 'block'; // Show KPI selection
+                        updateGenerateKpiButtonState(); // Update button state
+                        alertUser("AI suggested KPIs. Please select the ones you want to calculate.", "success");
+                    } else {
+                        alertUser("AI could not suggest any KPIs based on your data headers. Please check your CSV format.", "warning");
+                    }
+
+                } catch (error) {
+                    console.error("Error getting KPI suggestions:", error);
+                    alertUser("Error getting KPI suggestions: " + error.message, "error");
+                } finally {
+                    generateKpiText.textContent = 'Calculate KPIs & Generate Excel';
+                    generateKpiSpinner.style.display = 'none';
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function updateGenerateKpiButtonState() {
+            const selectedKpis = Array.from(document.querySelectorAll('#kpiCheckboxes input[name="kpi"]:checked'));
+            generateKpiExcelBtn.disabled = selectedKpis.length === 0 || rawCsvContent === null;
+        }
+
+        async function generateKpiExcel() {
+            const selectedKpis = Array.from(document.querySelectorAll('#kpiCheckboxes input[name="kpi"]:checked')).map(cb => cb.value);
+
+            if (selectedKpis.length === 0 || rawCsvContent === null) {
+                alertUser("Please upload CSV and select at least one KPI.", "warning");
+                return;
+            }
+
+            generateKpiText.textContent = 'Generating Excel...';
+            generateKpiSpinner.style.display = 'inline-block';
+            generateKpiExcelBtn.disabled = true;
+            statusMessageContainer.style.display = 'block';
+            statusMessage.textContent = 'Calculating KPIs and preparing your Excel file...';
+
+            try {
+                // Encode CSV content to Base64 to send in JSON body
+                const base64Csv = btoa(unescape(encodeURIComponent(rawCsvContent)));
+
+                const response = await fetch(`${BACKEND_PROXY_URL}/generate-excel`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        csv_data: base64Csv,
+                        selected_kpis: selectedKpis
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Backend error: ${errorData.error || response.statusText}`);
+                }
+
+                // The backend sends a file, so we get it as a Blob
+                const excelBlob = await response.blob();
+                const url = window.URL.createObjectURL(excelBlob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'ecommerce_kpis.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+
+                alertUser("Excel file generated and downloaded successfully!", "success");
+                statusMessage.textContent = 'Excel file is ready!';
+
+            } catch (error) {
+                console.error("Error generating Excel:", error);
+                alertUser("Error generating Excel: " + error.message, "error");
+                statusMessage.textContent = `Error: ${error.message}`;
+            } finally {
+                generateKpiText.textContent = 'Calculate KPIs & Generate Excel';
+                generateKpiSpinner.style.display = 'none';
+                updateGenerateKpiButtonState(); // Re-enable if KPIs are still selected
+            }
+        }
+
+        // Custom alert function (replaces window.alert)
+        function alertUser(message, type = "info") {
+            const container = document.querySelector('.container');
+            let alertDiv = document.getElementById('customAlert');
+
+            if (!alertDiv) {
+                alertDiv = document.createElement('div');
+                alertDiv.id = 'customAlert';
+                alertDiv.className = 'fixed top-4 right-4 p-4 rounded-md shadow-lg text-white z-50 transition-transform transform translate-x-full';
+                container.appendChild(alertDiv);
+            }
+
+            alertDiv.textContent = message;
+            alertDiv.style.display = 'block';
+
+            // Set colors based on type
+            if (type === "success") {
+                alertDiv.style.backgroundColor = '#10B981';
+            } else if (type === "warning") {
+                alertDiv.style.backgroundColor = '#F59E0B';
+            } else if (type === "error") {
+                alertDiv.style.backgroundColor = '#EF4444';
+            } else {
+                alertDiv.style.backgroundColor = '#3B82F6';
+            }
+
+            // Animate in
+            setTimeout(() => {
+                alertDiv.style.transform = 'translateX(0)';
+            }, 50);
+
+            // Animate out and remove
+            setTimeout(() => {
+                alertDiv.style.transform = 'translateX(120%)';
+                alertDiv.addEventListener('transitionend', () => {
+                    alertDiv.remove();
+                }, { once: true });
+            }, 3000);
+        }
+
+        // Initialize state
+        kpiSuggestionsSection.style.display = 'none';
+        generateKpiExcelBtn.disabled = true;
+        statusMessageContainer.style.display = 'none';
+
+    </script>
+</body>
+</html>
