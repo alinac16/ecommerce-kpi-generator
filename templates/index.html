@@ -33,42 +33,123 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* Custom styles for checkboxes grid */
-        .checkbox-grid {
+
+        /* Custom styles for elements, using Tailwind utilities where applicable */
+
+        /* Generic hidden class for display:none control */
+        .hidden {
+            display: none !important;
+        }
+
+        .app-file-upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 32rem; /* max-w-md */
+            margin-left: auto;
+            margin-right: auto; /* mx-auto */
+            padding: 1rem 1.5rem; /* py-4 px-6 */
+            border-width: 2px;
+            border-style: dashed;
+            border-color: #60a5fa; /* border-blue-400 */
+            border-radius: 0.5rem; /* rounded-lg */
+            color: #1d4ed8; /* text-blue-700 */
+            font-weight: 600; /* font-semibold */
+            font-size: 1.125rem; /* text-lg */
+            cursor: pointer;
+            background-color: #eff6ff; /* bg-blue-50 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition-property: all;
+            transition-duration: 200ms;
+            transition-timing-function: ease-in-out;
+        }
+        .app-file-upload-label:hover {
+            background-color: #dbeafe; /* hover:bg-blue-100 */
+            border-color: #3b82f6; /* hover:border-blue-500 */
+            transform: translateY(-2px);
+        }
+
+        .app-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem; /* px-6 py-3 */
+            border: none; /* border border-transparent */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            color: #ffffff; /* text-white */
+            font-weight: 600; /* font-semibold */
+            transition-property: all;
+            transition-duration: 200ms;
+            transition-timing-function: ease-in-out;
+        }
+        .app-button:hover {
+            transform: translateY(-2px);
+        }
+        .app-button:active {
+            transform: translateY(0);
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+        }
+        /* Specific button variants */
+        .app-button-primary {
+            padding: 0.875rem 2rem; /* px-8 py-3.5 */
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 800; /* font-extrabold */
+            letter-spacing: 0.05em; /* tracking-wide */
+            text-transform: uppercase;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+        }
+        .app-button-secondary {
+            /* For Copy to Clipboard */
+            background-image: linear-gradient(to right, #6b7280, #4b5563); /* bg-gradient-to-r from-gray-500 to-gray-600 */
+        }
+        .app-button-secondary:hover {
+            background-image: linear-gradient(to right, #4b5563, #374151); /* hover:from-gray-600 hover:to-gray-700 */
+        }
+
+        /* Disabled states for buttons */
+        .app-button-primary[disabled] {
+            cursor: not-allowed;
+            background-image: linear-gradient(to bottom right, #9ca3af, #6b7280); /* bg-gradient-to-br from-gray-400 to-gray-500 */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+            transform: none; /* disabled:transform-none */
+        }
+        .app-button-primary[disabled]:hover {
+            background-image: linear-gradient(to bottom right, #9ca3af, #6b7280); /* disabled:hover:from-gray-400 disabled:hover:to-gray-500 */
+        }
+
+        .app-grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted width to better fit details */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1rem;
             padding: 1rem;
             border: 1px solid #d1d5db;
             border-radius: 0.75rem;
             background-color: #edf2f7;
-            max-height: 400px; /* Increased height to accommodate more details */
+            max-height: 400px;
             overflow-y: auto;
             box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.05);
         }
-        .checkbox-item {
+        .app-grid-item {
             display: flex;
-            flex-direction: column; /* Stack elements vertically */
-            align-items: flex-start; /* Align content to the left */
-            padding: 0.8rem 1rem; /* More padding */
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 0.8rem 1rem;
             background-color: #ffffff;
             border-radius: 0.5rem;
             border: 1px solid #e2e8f0;
             box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
-            transition: all 0.15s ease-in-out;
+            transition-property: all;
+            transition-duration: 150ms;
+            transition-timing-function: ease-in-out;
         }
-        .checkbox-item:hover {
+        .app-grid-item:hover {
             border-color: #6366f1;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             transform: translateY(-2px);
         }
-        .checkbox-item-header {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 0.5rem; /* Space below header */
-        }
-        .checkbox-item input[type="checkbox"] {
+        .app-grid-item-checkbox {
             margin-right: 0.75rem;
             width: 1.35rem;
             height: 1.35rem;
@@ -78,58 +159,67 @@
             cursor: pointer;
             flex-shrink: 0;
         }
-        .checkbox-item label {
+        .app-grid-item-label {
             flex-grow: 1;
             cursor: pointer;
             font-size: 0.95rem;
             color: #374151;
-            font-weight: 600; /* Bolder KPI name */
+            font-weight: 600;
         }
-        .toggle-details-btn {
-            @apply ml-auto px-2 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition duration-150 ease-in-out;
+        .app-toggle-details-btn {
+            margin-left: auto;
+            padding: 0.25rem 0.5rem; /* px-2 py-1 */
+            font-size: 0.75rem; /* text-xs */
+            font-weight: 600; /* font-semibold */
+            color: #1d4ed8; /* text-blue-700 */
+            background-color: #dbeafe; /* bg-blue-100 */
+            border-radius: 9999px; /* rounded-full */
+            transition-property: all;
+            transition-duration: 150ms;
+            transition-timing-function: ease-in-out;
         }
-        .kpi-details {
+        .app-toggle-details-btn:hover {
+            background-color: #bfdbfe; /* hover:bg-blue-200 */
+        }
+        .app-item-details {
             width: 100%;
             font-size: 0.85rem;
-            color: #4a5568; /* darker gray */
+            color: #4a5568;
             padding-top: 0.5rem;
             border-top: 1px dashed #e2e8f0;
             margin-top: 0.5rem;
-            display: none; /* Hidden by default */
+            display: none;
         }
-        .kpi-details.active {
-            display: block; /* Shown when active */
+        .app-item-details.active {
+            display: block;
         }
-        .kpi-details p {
-            margin-bottom: 0.4rem;
+        .app-mapping-select {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem; /* rounded-md */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+            font-size: 0.875rem; /* text-sm */
+            margin-top: 0.5rem;
+            background-color: #f9fafb;
         }
-        .kpi-details strong {
-            color: #2d3748; /* Even darker for emphasis */
+        .app-textarea {
+            display: block;
+            width: 100%;
+            padding: 1rem; /* p-4 */
+            border: 1px solid #d1d5db; /* border border-gray-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) inset; /* shadow-inner */
+            font-family: monospace; /* font-mono */
+            font-size: 0.95rem; /* text-[0.95rem] */
+            color: #2d3748; /* text-gray-800 */
+            background-color: #f8faff; /* bg-[#f8faff] */
+            /* Add focus styles if needed: focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 */
         }
-        /* General button styles for reusability */
-        .btn {
-            @apply inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-semibold rounded-lg shadow-md text-white transition duration-200 ease-in-out transform;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-        .btn:active {
-            transform: translateY(0);
-            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-        }
-        .btn:disabled {
-            @apply cursor-not-allowed bg-gradient-to-br from-gray-400 to-gray-500 hover:from-gray-400 hover:to-gray-500 shadow-sm;
-            transform: none;
-        }
-        /* Specific button styles */
-        .btn-blue {
-            @apply bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-xl;
-        }
-        .btn-green {
-            @apply bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-xl;
-        }
-        .btn-gray {
-            @apply bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700;
+        .app-status-message {
+            text-align: center;
+            color: #4a5568; /* text-gray-700 */
         }
     </style>
 </head>
@@ -142,27 +232,46 @@
         <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-8">✨ AI KPI Generator for E-commerce ✨</h1>
 
         <div class="mb-6">
-            <label for="csvFile" class="flex flex-col items-center justify-center max-w-md mx-auto py-4 px-6 border-2 border-dashed border-blue-400 rounded-lg text-blue-700 font-semibold text-lg cursor-pointer bg-blue-50 hover:bg-blue-100 hover:border-blue-500 transition duration-200 ease-in-out shadow-md hover:-translate-y-0.5">
+            <label for="csvFile" class="app-file-upload-label">
                 <span class="font-bold">Upload E-commerce CSV Data</span>
                 <p class="text-sm text-gray-600 mt-1">Click here to select your order data (CSV)</p>
                 <input type="file" id="csvFile" accept=".csv" class="hidden">
             </label>
         </div>
 
+        <!-- NEW: Column Mapping Section -->
+        <div class="mb-6" id="columnMappingSection" style="display:none;">
+            <label class="block text-base font-medium text-gray-700 mb-3">AI Suggested Column Mapping (Review & Adjust):</label>
+            <div id="columnMappingList" class="app-grid-container">
+                <!-- Mappings will be populated here -->
+            </div>
+            <div class="flex justify-center mt-6 gap-4">
+                <button id="downloadCleanedDataBtn"
+                        class="app-button bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 hidden"
+                        disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-2">
+                      <path fill-rule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5H3Z" clip-rule="evenodd" />
+                    </svg>
+                    <span id="downloadCleanedDataText">Download Cleaned Raw Data</span>
+                    <div id="downloadCleanedDataSpinner" class="spinner ml-2" style="display:none;"></div>
+                </button>
+                <button id="confirmMappingBtn" class="app-button app-button-primary bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    <span id="confirmMappingText">Confirm Mappings & Get KPIs</span>
+                    <div id="confirmMappingSpinner" class="spinner ml-3" style="display:none;"></div>
+                </button>
+            </div>
+        </div>
+
         <div class="mb-6" id="kpiSuggestionsSection" style="display:none;">
             <label class="block text-base font-medium text-gray-700 mb-3">AI Suggested KPIs (Select to Calculate):</label>
-            <div id="kpiCheckboxes" class="checkbox-grid">
+            <div id="kpiCheckboxes" class="app-grid-container">
                 <!-- KPI checkboxes will be populated by JavaScript -->
             </div>
         </div>
 
         <div class="mb-6 mt-8 flex justify-center">
             <button id="generateKpiExcelBtn"
-                    class="inline-flex items-center justify-center px-8 py-3.5 border border-transparent text-lg font-extrabold rounded-lg shadow-xl text-white uppercase tracking-wide
-                           bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
-                           hover:-translate-y-0.5 active:translate-y-0 active:shadow-inner
-                           disabled:cursor-not-allowed disabled:bg-gradient-to-br disabled:from-gray-400 disabled:to-gray-500 disabled:hover:from-gray-400 disabled:hover:to-gray-500 disabled:shadow-sm disabled:transform-none
-                           transition duration-200 ease-in-out transform max-w-sm"
+                    class="app-button app-button-primary bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                     disabled>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-3">
                     <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.292-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.007Z" clip-rule="evenodd" />
@@ -173,20 +282,30 @@
         </div>
 
         <div class="mb-6 mt-8" id="statusMessageContainer" style="display:none;">
-            <p id="statusMessage" class="text-center text-gray-700"></p>
+            <p id="statusMessage" class="app-status-message"></p>
         </div>
     </div>
 
     <script type="module">
         // Backend Proxy Server URL (Update this when you deploy your Flask app!)
-        // For local development, it's typically http://127.0.0.1:5000
         const BACKEND_PROXY_URL = "http://127.0.0.1:5000";
 
-        // Global variable to store CSV content after upload
         let rawCsvContent = null;
+        let originalCsvHeaders = [];
+        let suggestedKpisStore = [];
+        let confirmedColumnMapping = {};
 
         // --- DOM Elements ---
         const csvFileInput = document.getElementById('csvFile');
+        const columnMappingSection = document.getElementById('columnMappingSection');
+        const columnMappingList = document.getElementById('columnMappingList');
+        const confirmMappingBtn = document.getElementById('confirmMappingBtn');
+        const confirmMappingText = document.getElementById('confirmMappingText');
+        const confirmMappingSpinner = document.getElementById('confirmMappingSpinner');
+        const downloadCleanedDataBtn = document.getElementById('downloadCleanedDataBtn');
+        const downloadCleanedDataText = document.getElementById('downloadCleanedDataText');
+        const downloadCleanedDataSpinner = document.getElementById('downloadCleanedDataSpinner');
+
         const kpiSuggestionsSection = document.getElementById('kpiSuggestionsSection');
         const kpiCheckboxesDiv = document.getElementById('kpiCheckboxes');
         const generateKpiExcelBtn = document.getElementById('generateKpiExcelBtn');
@@ -197,6 +316,8 @@
 
         // --- Event Listeners ---
         csvFileInput.addEventListener('change', handleFileSelect);
+        confirmMappingBtn.addEventListener('click', handleConfirmMapping);
+        downloadCleanedDataBtn.addEventListener('click', handleDownloadCleanedData);
         kpiCheckboxesDiv.addEventListener('change', updateGenerateKpiButtonState);
         generateKpiExcelBtn.addEventListener('click', generateKpiExcel);
 
@@ -208,27 +329,35 @@
                 return;
             }
 
-            // Reset UI
+            // Reset UI for new upload
+            columnMappingSection.style.display = 'none';
+            columnMappingList.innerHTML = '';
             kpiSuggestionsSection.style.display = 'none';
             kpiCheckboxesDiv.innerHTML = '';
             generateKpiExcelBtn.disabled = true;
             statusMessageContainer.style.display = 'none';
             statusMessage.textContent = '';
-            rawCsvContent = null; // Clear previous CSV content
+            rawCsvContent = null;
+            originalCsvHeaders = [];
+            suggestedKpisStore = [];
+            confirmedColumnMapping = {};
+            downloadCleanedDataBtn.disabled = true;
+            downloadCleanedDataBtn.classList.add('hidden'); // Ensure hidden on new upload
 
-            generateKpiText.textContent = 'Analyzing Headers...';
-            generateKpiSpinner.style.display = 'inline-block';
-            generateKpiExcelBtn.disabled = true; // Disable until analysis is done
+            confirmMappingBtn.disabled = true;
+            confirmMappingText.textContent = 'Analyzing Headers for Mapping...';
+            confirmMappingSpinner.style.display = 'inline-block';
 
             const reader = new FileReader();
             reader.onload = async function(e) {
                 rawCsvContent = e.target.result;
                 const firstLine = rawCsvContent.split('\n')[0];
                 const headers = firstLine.split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+                originalCsvHeaders = headers;
 
                 try {
-                    // Send headers to backend for KPI suggestions
-                    const response = await fetch(`${BACKEND_PROXY_URL}/suggest-kpis`, {
+                    // Step 1: Get Column Mapping Suggestions from AI
+                    const response = await fetch(`${BACKEND_PROXY_URL}/suggest-column-mapping`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ headers: headers })
@@ -240,81 +369,231 @@
                     }
 
                     const result = await response.json();
-                    const suggestedKpis = result.kpis; // This now expects an array of objects
+                    const suggestedMapping = result.mapping; 
 
-                    if (suggestedKpis && suggestedKpis.length > 0) {
-                        // Populate KPI checkboxes with new details
-                        suggestedKpis.forEach((kpi, index) => {
-                            const checkboxItemDiv = document.createElement('div');
-                            checkboxItemDiv.className = 'checkbox-item'; // Use base class for item styling
+                    if (Object.keys(suggestedMapping).length > 0) {
+                        columnMappingList.innerHTML = '';
+                        const uniqueConceptualNames = [...new Set(Object.values(suggestedMapping))]; 
+                        
+                        uniqueConceptualNames.forEach(conceptualName => {
+                            const mappedCsvHeader = Object.keys(suggestedMapping).find(key => suggestedMapping[key] === conceptualName);
 
-                            const headerDiv = document.createElement('div');
-                            headerDiv.className = 'checkbox-item-header'; // New class for flex header
+                            const mappingItemDiv = document.createElement('div');
+                            mappingItemDiv.className = 'app-grid-item';
 
-                            const checkboxInput = document.createElement('input');
-                            checkboxInput.type = 'checkbox';
-                            checkboxInput.id = `kpi-${index}`; // Use index for unique ID
-                            checkboxInput.value = kpi.name; // Use KPI name as value
-                            checkboxInput.name = 'kpi';
-                            checkboxInput.className = 'mr-3 w-5 h-5 rounded-md border-gray-400 accent-blue-500 cursor-pointer flex-shrink-0';
+                            const conceptualLabel = document.createElement('label');
+                            conceptualLabel.className = 'block text-sm font-semibold text-gray-700 mb-1';
+                            conceptualLabel.textContent = `Map to ${conceptualName}:`;
+                            mappingItemDiv.appendChild(conceptualLabel);
 
-                            const checkboxLabel = document.createElement('label');
-                            checkboxLabel.htmlFor = `kpi-${index}`;
-                            checkboxLabel.textContent = kpi.name; // Display KPI name
-                            checkboxLabel.className = 'flex-grow cursor-pointer text-[0.95rem] text-gray-700 font-medium';
-
-                            const toggleBtn = document.createElement('button');
-                            toggleBtn.className = 'toggle-details-btn';
-                            toggleBtn.textContent = 'Show Details';
-                            toggleBtn.onclick = function(e) {
-                                e.preventDefault(); // Prevent checkbox from being toggled if button is inside label
-                                e.stopPropagation(); // Stop event from bubbling to parent checkbox/label
-                                const detailsDiv = this.closest('.checkbox-item').querySelector('.kpi-details');
-                                detailsDiv.classList.toggle('active');
-                                this.textContent = detailsDiv.classList.contains('active') ? 'Hide Details' : 'Show Details';
-                            };
-
-                            headerDiv.appendChild(checkboxInput);
-                            headerDiv.appendChild(checkboxLabel);
-                            headerDiv.appendChild(toggleBtn);
-                            checkboxItemDiv.appendChild(headerDiv);
-
-                            // Details section (collapsible)
-                            const detailsDiv = document.createElement('div');
-                            detailsDiv.className = 'kpi-details'; // Hidden by default via CSS
-
-                            const equationP = document.createElement('p');
-                            equationP.innerHTML = `<strong>Equation:</strong> <code class="bg-gray-100 text-gray-800 px-1 py-0.5 rounded">${kpi.equation}</code>`;
-                            detailsDiv.appendChild(equationP);
-
-                            const engDescP = document.createElement('p');
-                            engDescP.innerHTML = `<strong>English:</strong> ${kpi.english_description}`;
-                            detailsDiv.appendChild(engDescP);
-
-                            const thaiDescP = document.createElement('p');
-                            thaiDescP.innerHTML = `<strong>ภาษาไทย:</strong> ${kpi.thai_description}`;
-                            detailsDiv.appendChild(thaiDescP);
-
-                            checkboxItemDiv.appendChild(detailsDiv);
-                            kpiCheckboxesDiv.appendChild(checkboxItemDiv);
+                            const selectElement = document.createElement('select');
+                            selectElement.className = 'app-mapping-select';
+                            selectElement.dataset.conceptualName = conceptualName;
+                            
+                            originalCsvHeaders.forEach(header => {
+                                const option = document.createElement('option');
+                                option.value = header;
+                                option.textContent = header;
+                                if (header === mappedCsvHeader) {
+                                    option.selected = true;
+                                }
+                                selectElement.appendChild(option);
+                            });
+                            mappingItemDiv.appendChild(selectElement);
+                            columnMappingList.appendChild(mappingItemDiv);
                         });
-                        kpiSuggestionsSection.style.display = 'block'; // Show KPI selection
-                        updateGenerateKpiButtonState(); // Update button state
-                        alertUser("AI suggested KPIs. Please select the ones you want to calculate.", "success");
+                        
+                        columnMappingSection.style.display = 'block';
+                        confirmMappingBtn.disabled = false;
+                        alertUser("AI suggested column mappings. Review and adjust if needed.", "success");
                     } else {
-                        alertUser("AI could not suggest any KPIs based on your data headers. Please check your CSV format.", "warning");
+                        alertUser("AI could not suggest any column mappings based on your headers. Please check your CSV format.", "warning");
                     }
 
                 } catch (error) {
-                    console.error("Error getting KPI suggestions:", error);
-                    alertUser("Error getting KPI suggestions: " + error.message, "error");
+                    console.error("Error getting column mapping suggestions:", error);
+                    alertUser("Error getting column mapping suggestions: " + error.message, "error");
                 } finally {
-                    generateKpiText.textContent = 'Calculate KPIs & Generate Excel';
-                    generateKpiSpinner.style.display = 'none';
+                    confirmMappingText.textContent = 'Confirm Mappings & Get KPIs';
+                    confirmMappingSpinner.style.display = 'none';
                 }
             };
             reader.readAsText(file);
         }
+
+        async function handleConfirmMapping() {
+            confirmedColumnMapping = {};
+            const selectElements = columnMappingList.querySelectorAll('.app-mapping-select');
+            selectElements.forEach(select => {
+                const conceptualName = select.dataset.conceptualName;
+                const actualCsvHeader = select.value;
+                if (conceptualName && actualCsvHeader) {
+                    confirmedColumnMapping[conceptualName] = actualCsvHeader;
+                }
+            });
+
+            if (Object.keys(confirmedColumnMapping).length === 0) {
+                alertUser("No valid mappings selected. Please select at least one mapping.", "warning");
+                return;
+            }
+
+            // Proceed to get KPI suggestions
+            confirmMappingBtn.disabled = true;
+            confirmMappingText.textContent = 'Getting KPI Suggestions...';
+            confirmMappingSpinner.style.display = 'inline-block';
+            
+            const conceptualHeaders = Object.keys(confirmedColumnMapping);
+
+            try {
+                // Step 2: Get KPI Suggestions from AI using confirmed conceptual headers
+                const response = await fetch(`${BACKEND_PROXY_URL}/suggest-kpis`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ conceptual_headers: conceptualHeaders })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Backend error: ${errorData.error || response.statusText}`);
+                }
+
+                const result = await response.json();
+                const suggestedKpis = result.kpis;
+
+                if (suggestedKpis && suggestedKpis.length > 0) {
+                    suggestedKpisStore = suggestedKpis;
+
+                    kpiCheckboxesDiv.innerHTML = '';
+                    suggestedKpis.forEach((kpi, index) => {
+                        const kpiItemDiv = document.createElement('div');
+                        kpiItemDiv.className = 'app-grid-item';
+
+                        const headerDiv = document.createElement('div');
+                        headerDiv.className = 'grid-item-header';
+
+                        const checkboxInput = document.createElement('input');
+                        checkboxInput.type = 'checkbox';
+                        checkboxInput.id = `kpi-${index}`;
+                        checkboxInput.value = kpi.name;
+                        checkboxInput.name = 'kpi';
+                        checkboxInput.className = 'app-grid-item-checkbox';
+
+                        const checkboxLabel = document.createElement('label');
+                        checkboxLabel.htmlFor = `kpi-${index}`;
+                        checkboxLabel.textContent = kpi.name;
+                        checkboxLabel.className = 'app-grid-item-label';
+
+                        const toggleBtn = document.createElement('button');
+                        toggleBtn.className = 'app-toggle-details-btn';
+                        toggleBtn.textContent = 'Show Details';
+                        toggleBtn.onclick = function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const detailsDiv = this.closest('.app-grid-item').querySelector('.app-item-details');
+                            detailsDiv.classList.toggle('active');
+                            this.textContent = detailsDiv.classList.contains('active') ? 'Hide Details' : 'Show Details';
+                        };
+
+                        headerDiv.appendChild(checkboxInput);
+                        headerDiv.appendChild(checkboxLabel);
+                        headerDiv.appendChild(toggleBtn);
+                        kpiItemDiv.appendChild(headerDiv);
+
+                        const detailsDiv = document.createElement('div');
+                        detailsDiv.className = 'app-item-details';
+
+                        const equationP = document.createElement('p');
+                        equationP.innerHTML = `<strong>Equation:</strong> <code class="bg-gray-100 text-gray-800 px-1 py-0.5 rounded">${kpi.equation}</code>`;
+                        detailsDiv.appendChild(equationP);
+
+                        const engDescP = document.createElement('p');
+                        engDescP.innerHTML = `<strong>English:</strong> ${kpi.english_description}`;
+                        detailsDiv.appendChild(engDescP);
+
+                        const thaiDescP = document.createElement('p');
+                        thaiDescP.innerHTML = `<strong>ภาษาไทย:</strong> ${kpi.thai_description}`;
+                        detailsDiv.appendChild(thaiDescP);
+
+                        kpiItemDiv.appendChild(detailsDiv);
+                        kpiCheckboxesDiv.appendChild(kpiItemDiv);
+                    });
+                    kpiSuggestionsSection.style.display = 'block';
+                    updateGenerateKpiButtonState();
+                    alertUser("AI suggested KPIs. Please select the ones you want to calculate.", "success");
+
+                    // Show the download cleaned data button here after successful KPI suggestions
+                    downloadCleanedDataBtn.classList.remove('hidden'); // Make button visible
+                    downloadCleanedDataBtn.disabled = false; // Enable button
+                } else {
+                    alertUser("AI could not suggest any KPIs based on the mapped headers. Please try different headers.", "warning");
+                }
+
+            } catch (error) {
+                console.error("Error getting KPI suggestions:", error);
+                alertUser("Error getting KPI suggestions: " + error.message, "error");
+            } finally {
+                confirmMappingText.textContent = 'Confirm Mappings & Get KPIs';
+                confirmMappingSpinner.style.display = 'none';
+                confirmMappingBtn.disabled = false;
+            }
+        }
+
+        async function handleDownloadCleanedData() {
+            if (rawCsvContent === null || Object.keys(confirmedColumnMapping).length === 0) {
+                alertUser("Please upload CSV and confirm mappings first.", "warning");
+                return;
+            }
+
+            downloadCleanedDataBtn.disabled = true;
+            downloadCleanedDataText.textContent = 'Downloading...';
+            downloadCleanedDataSpinner.style.display = 'inline-block';
+            statusMessageContainer.style.display = 'block';
+            statusMessage.textContent = 'Preparing cleaned raw data...';
+
+            try {
+                const base64Csv = btoa(unescape(encodeURIComponent(rawCsvContent)));
+
+                const response = await fetch(`${BACKEND_PROXY_URL}/clean-data`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        csv_data: base64Csv,
+                        confirmed_column_mapping: confirmedColumnMapping
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Backend error: ${errorData.error || response.statusText}`);
+                }
+
+                const excelBlob = await response.blob();
+                const url = window.URL.createObjectURL(excelBlob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'cleaned_raw_data.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+
+                alertUser("Cleaned raw data Excel downloaded successfully!", "success");
+                statusMessage.textContent = 'Cleaned raw data is ready!';
+
+            } catch (error) {
+                console.error("Error downloading cleaned data:", error);
+                alertUser("Error downloading cleaned data: " + error.message, "error");
+                statusMessage.textContent = `Error: ${error.message}`;
+            } finally {
+                downloadCleanedDataText.textContent = 'Download Cleaned Raw Data';
+                downloadCleanedDataSpinner.style.display = 'none';
+                downloadCleanedDataBtn.disabled = false;
+            }
+        }
+
 
         function updateGenerateKpiButtonState() {
             const selectedKpis = Array.from(document.querySelectorAll('#kpiCheckboxes input[name="kpi"]:checked'));
@@ -322,10 +601,12 @@
         }
 
         async function generateKpiExcel() {
-            const selectedKpis = Array.from(document.querySelectorAll('#kpiCheckboxes input[name="kpi"]:checked')).map(cb => cb.value);
+            const selectedKpiNames = Array.from(document.querySelectorAll('#kpiCheckboxes input[name="kpi"]:checked')).map(cb => cb.value);
 
-            if (selectedKpis.length === 0 || rawCsvContent === null) {
-                alertUser("Please upload CSV and select at least one KPI.", "warning");
+            const selectedKpisToSend = suggestedKpisStore.filter(kpi => selectedKpiNames.includes(kpi.name));
+
+            if (selectedKpisToSend.length === 0 || rawCsvContent === null || Object.keys(confirmedColumnMapping).length === 0) {
+                alertUser("Please upload CSV, confirm mappings, and select at least one KPI.", "warning");
                 return;
             }
 
@@ -336,7 +617,6 @@
             statusMessage.textContent = 'Calculating KPIs and preparing your Excel file...';
 
             try {
-                // Encode CSV content to Base64 to send in JSON body
                 const base64Csv = btoa(unescape(encodeURIComponent(rawCsvContent)));
 
                 const response = await fetch(`${BACKEND_PROXY_URL}/generate-excel`, {
@@ -346,7 +626,8 @@
                     },
                     body: JSON.stringify({
                         csv_data: base64Csv,
-                        selected_kpis: selectedKpis
+                        selected_kpis: selectedKpisToSend,
+                        confirmed_column_mapping: confirmedColumnMapping
                     })
                 });
 
@@ -355,7 +636,6 @@
                     throw new Error(`Backend error: ${errorData.error || response.statusText}`);
                 }
 
-                // The backend sends a file, so we get it as a Blob
                 const excelBlob = await response.blob();
                 const url = window.URL.createObjectURL(excelBlob);
                 const a = document.createElement('a');
@@ -377,11 +657,11 @@
             } finally {
                 generateKpiText.textContent = 'Calculate KPIs & Generate Excel';
                 generateKpiSpinner.style.display = 'none';
-                updateGenerateKpiButtonState(); // Re-enable if KPIs are still selected
+                updateGenerateKpiButtonState();
             }
         }
 
-        // Custom alert function (replaces window.alert)
+        // Custom alert function
         function alertUser(message, type = "info") {
             const container = document.querySelector('.container');
             let alertDiv = document.getElementById('customAlert');
@@ -422,9 +702,12 @@
         }
 
         // Initialize state
+        columnMappingSection.style.display = 'none';
         kpiSuggestionsSection.style.display = 'none';
         generateKpiExcelBtn.disabled = true;
         statusMessageContainer.style.display = 'none';
+        downloadCleanedDataBtn.disabled = true; // Ensure disabled on load
+        downloadCleanedDataBtn.classList.add('hidden'); // Ensure hidden on load
 
     </script>
 </body>
