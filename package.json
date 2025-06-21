@@ -1,0 +1,31 @@
+{
+  "name": "ecommerce-kpi-generator",
+  "version": "1.0.0",
+  "description": "ecommerce insights",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
+    "watch:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alinac16/ecommerce-kpi-generator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/alinac16/ecommerce-kpi-generator/issues"
+  },
+  "homepage": "https://github.com/alinac16/ecommerce-kpi-generator#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.10"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.10"
+  }
+}
