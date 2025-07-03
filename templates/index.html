@@ -3,712 +3,1104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI KPI Generator for E-commerce</title>
-    <!-- Removed Tailwind CDN and replaced with local CSS link -->
-    <link href="./dist/output.css" rel="stylesheet"> 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Digital Brew Analytics</title>
+    <!-- Google Fonts: Oswald for headings, Inter for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6hIkXw7jNGn2EICwxhNq7W3P/WVQ4xO5zQ+8" crossorigin="anonymous">
+    <!-- Chart.js CDN for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* These base styles remain as they are not directly Tailwind utility classes */
+        /* Modern Tech Color Palette (inspired by packaging):
+           --color-background-light: #F2F2F2; (Paper-like light gray)
+           --color-text-dark: #3A2F2F; (Deep Charcoal/Brown)
+           --color-primary-orange: #E06C2D; (Warm Orange)
+           --color-primary-orange-hover: #C55E27; (Darker Orange)
+           --color-secondary-grey: #D9D9D9; (Light Gray)
+           --color-secondary-grey-hover: #B3B3B3; (Medium Gray)
+           --color-border: #CCCCCC; (Slightly darker border)
+           --color-kpi-value-accent: #5C884F; (Distinct Green)
+           --color-error-text: #DC3545; (Bootstrap Red)
+           --color-success-text: #28A745; (Bootstrap Green)
+        */
+
+        :root {
+            --color-background-light: #F2F2F2;
+            --color-text-dark: #3A2F2F;
+            --color-primary-orange: #E06C2D;
+            --color-primary-orange-hover: #C55E27;
+            --color-secondary-grey: #D9D9D9;
+            --color-secondary-grey-hover: #B3B3B3;
+            --color-border: #CCCCCC;
+            --color-kpi-value-accent: #5C884F;
+            --color-error-text: #DC3545;
+            --color-success-text: #28A745;
+            --color-muted-text: #666666; /* General muted text */
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
-            color: #2d3748;
+            font-family: 'Inter', sans-serif; /* Body text */
+            background-color: var(--color-background-light);
+            color: var(--color-text-dark);
+            line-height: 1.6;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Oswald', sans-serif; /* Headings */
+            color: var(--color-text-dark); /* Default heading color */
         }
         .container {
-            max-width: 800px;
-            margin: 2.5rem auto;
-            padding: 2.5rem;
-            background-color: #ffffff;
-            border-radius: 1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
+            max-width: 1200px;
         }
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-left-color: #ffffff;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Custom styles that map to Tailwind utilities (these would be compiled into output.css) */
-
-        .hidden {
-            display: none !important;
-        }
-
-        .app-file-upload-label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            max-width: 32rem; /* max-w-md */
-            margin-left: auto;
-            margin-right: auto; /* mx-auto */
-            padding: 1rem 1.5rem; /* py-4 px-6 */
-            border-width: 2px;
-            border-style: dashed;
-            border-color: #60a5fa; /* border-blue-400 */
-            border-radius: 0.5rem; /* rounded-lg */
-            color: #1d4ed8; /* text-blue-700 */
-            font-weight: 600; /* font-semibold */
-            font-size: 1.125rem; /* text-lg */
-            cursor: pointer;
-            background-color: #eff6ff; /* bg-blue-50 */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition-property: all;
-            transition-duration: 200ms;
-            transition-timing-function: ease-in-out;
-        }
-        .app-file-upload-label:hover {
-            background-color: #dbeafe; /* hover:bg-blue-100 */
-            border-color: #3b82f6; /* hover:border-blue-500 */
-            transform: translateY(-2px);
-        }
-
-        .app-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem 1.5rem; /* px-6 py-3 */
-            border: none; /* border border-transparent */
-            border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
-            color: #ffffff; /* text-white */
-            font-weight: 600; /* font-semibold */
-            transition-property: all;
-            transition-duration: 200ms;
-            transition-timing-function: ease-in-out;
-        }
-        .app-button:hover {
-            transform: translateY(-2px);
-        }
-        .app-button:active {
-            transform: translateY(0);
-            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-        }
-        /* Specific button variants */
-        .app-button-primary {
-            padding: 0.875rem 2rem; /* px-8 py-3.5 */
-            font-size: 1.125rem; /* text-lg */
-            font-weight: 800; /* font-extrabold */
-            letter-spacing: 0.05em; /* tracking-wide */
-            text-transform: uppercase;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
-        }
-        .app-button-secondary {
-            /* For Copy to Clipboard */
-            background-image: linear-gradient(to right, #6b7280, #4b5563); /* bg-gradient-to-r from-gray-500 to-gray-600 */
-        }
-        .app-button-secondary:hover {
-            background-image: linear-gradient(to right, #4b5563, #374151); /* hover:from-gray-600 hover:to-gray-700 */
-        }
-
-        /* Disabled states for buttons */
-        .app-button-primary[disabled] {
-            cursor: not-allowed;
-            background-image: linear-gradient(to bottom right, #9ca3af, #6b7280); /* bg-gradient-to-br from-gray-400 to-gray-500 */
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
-            transform: none; /* disabled:transform-none */
-        }
-        .app-button-primary[disabled]:hover {
-            background-image: linear-gradient(to bottom right, #9ca3af, #6b7280); /* disabled:hover:from-gray-400 disabled:hover:to-gray-500 */
-        }
-
-        .app-grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1rem;
-            padding: 1rem;
-            border: 1px solid #d1d5db;
+        .card {
+            background-color: white; /* Pure white cards */
             border-radius: 0.75rem;
-            background-color: #edf2f7;
-            max-height: 400px;
-            overflow-y: auto;
-            box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Clean, soft shadow */
+            padding: 1.75rem;
+            border: 1px solid var(--color-border);
+            color: var(--color-text-dark);
         }
-        .app-grid-item {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 0.8rem 1rem;
-            background-color: #ffffff;
-            border-radius: 0.5rem;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.05);
-            transition-property: all;
-            transition-duration: 150ms;
-            transition-timing-function: ease-in-out;
-        }
-        .app-grid-item:hover {
-            border-color: #6366f1;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transform: translateY(-2px);
-        }
-        .app-grid-item-checkbox {
-            margin-right: 0.75rem;
-            width: 1.35rem;
-            height: 1.35rem;
-            border-radius: 0.35rem;
-            border-color: #94a3b8;
-            accent-color: #3b82f6;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .app-grid-item-label {
-            flex-grow: 1;
-            cursor: pointer;
-            font-size: 0.95rem;
-            color: #374151;
+        .btn-primary {
+            background-color: var(--color-primary-orange);
+            border-color: var(--color-primary-orange);
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
             font-weight: 600;
         }
-        .app-toggle-details-btn {
-            margin-left: auto;
-            padding: 0.25rem 0.5rem; /* px-2 py-1 */
-            font-size: 0.75rem; /* text-xs */
-            font-weight: 600; /* font-semibold */
-            color: #1d4ed8; /* text-blue-700 */
-            background-color: #dbeafe; /* bg-blue-100 */
-            border-radius: 9999px; /* rounded-full */
-            transition-property: all;
-            transition-duration: 150ms;
-            transition-timing-function: ease-in-out;
+        .btn-primary:hover {
+            background-color: var(--color-primary-orange-hover);
+            border-color: var(--color-primary-orange-hover);
+            transform: translateY(-2px);
         }
-        .app-toggle-details-btn:hover {
-            background-color: #bfdbfe; /* hover:bg-blue-200 */
+        .btn-secondary {
+            background-color: var(--color-secondary-grey);
+            border-color: var(--color-secondary-grey);
+            color: var(--color-text-dark);
+            padding: 0.8rem 1.8rem;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+            font-weight: 600;
         }
-        .app-item-details {
+        .btn-secondary:hover {
+            background-color: var(--color-secondary-grey-hover);
+            border-color: var(--color-secondary-grey-hover);
+            transform: translateY(-2px);
+        }
+        .spinner-border {
+            border: 0.25em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: .75s linear infinite spinner-border;
+        }
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
+        /* Custom scrollbar for KPI list */
+        .kpi-list-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .kpi-list-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .kpi-list-container::-webkit-scrollbar-track {
+            background: var(--color-secondary-grey);
+            border-radius: 10px;
+        }
+        .kpi-list-container::-webkit-scrollbar-thumb {
+            background: var(--color-secondary-grey-hover);
+            border-radius: 10px;
+        }
+        .kpi-list-container::-webkit-scrollbar-thumb:hover {
+            background: var(--color-muted-text);
+        }
+
+        /* Modal styling */
+        .modal-custom {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
             width: 100%;
-            font-size: 0.85rem;
-            color: #4a5568;
-            padding-top: 0.5rem;
-            border-top: 1px dashed #e2e8f0;
-            margin-top: 0.5rem;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content-custom {
+            background-color: white;
+            padding: 25px;
+            border: 1px solid var(--color-border);
+            width: 90%;
+            max-width: 550px;
+            border-radius: 1rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            color: var(--color-text-dark);
+        }
+        .close-button {
+            color: var(--color-muted-text);
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            line-height: 1;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--color-text-dark);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Custom styling for KPI results item */
+        .kpi-result-item {
+            background-color: white;
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            padding: 1.75rem;
+        }
+        .kpi-result-item h3 {
+            color: var(--color-primary-orange);
+            font-weight: 700;
+        }
+        .kpi-result-item p.display-value {
+            color: var(--color-kpi-value-accent); /* Green accent for KPI values */
+            font-weight: 800;
+            font-size: 2.5rem;
+        }
+        .kpi-result-item .ai-insight {
+            color: var(--color-text-dark);
+            font-size: 0.95rem;
+        }
+        .kpi-result-item .ai-insight .font-semibold {
+            color: var(--color-primary-orange);
+        }
+        .kpi-list-item {
+            background-color: white; /* Explicitly white for 'active' look */
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            color: var(--color-text-dark);
+            margin-bottom: 0.75rem;
+        }
+        .kpi-list-item .form-check-label {
+            color: var(--color-text-dark);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .kpi-list-item .text-secondary {
+            color: var(--color-muted-text) !important;
+        }
+        .text-dark {
+            color: var(--color-text-dark) !important;
+        }
+        .text-primary {
+            color: var(--color-primary-orange) !important; /* Main accent color */
+        }
+        .text-secondary {
+            color: var(--color-muted-text) !important;
+        }
+        .text-danger {
+            color: var(--color-error-text) !important;
+        }
+        .text-success {
+            color: var(--color-success-text) !important;
+        }
+        .bg-light {
+            background-color: white !important; /* Entire KPI list container is white */
+        }
+        .border-secondary-subtle {
+            border-color: var(--color-border) !important;
+        }
+        canvas {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid var(--color-border);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Custom file input styling */
+        .custom-file-input-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            background-color: var(--color-secondary-grey); /* Keep this as secondary grey */
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .custom-file-input {
             display: none;
         }
-        .app-item-details.active {
-            display: block;
+        .custom-file-label {
+            background-color: var(--color-primary-orange);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            flex-shrink: 0;
+            font-weight: 600;
         }
-        .app-mapping-select {
-            display: block;
+        .custom-file-label:hover {
+            background-color: var(--color-primary-orange-hover);
+            transform: translateY(-1px);
+        }
+        .file-name-display {
+            margin-left: 1rem;
+            color: var(--color-text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 1.05rem;
+        }
+
+        /* Creative Loading Spinner/Slideshow */
+        .creative-loading-spinner {
             width: 100%;
-            padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem; /* rounded-md */
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
-            font-size: 0.875rem; /* text-sm */
-            margin-top: 0.5rem;
-            background-color: #f9fafb;
-        }
-        .app-textarea {
-            display: block;
-            width: 100%;
-            padding: 1rem; /* p-4 */
-            border: 1px solid #d1d5db; /* border border-gray-300 */
-            border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) inset; /* shadow-inner */
-            font-family: monospace; /* font-mono */
-            font-size: 0.95rem; /* text-[0.95rem] */
-            color: #2d3748; /* text-gray-800 */
-            background-color: #f8faff; /* bg-[#f8faff] */
-            /* Add focus styles if needed: focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 */
-        }
-        .app-status-message {
+            max-width: 600px;
+            height: auto;
+            margin: 4rem auto;
+            position: relative;
+            overflow: hidden;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
             text-align: center;
-            color: #4a5568; /* text-gray-700 */
+            padding-bottom: 0;
+        }
+
+        .loading-content {
+            position: relative;
+            z-index: 2;
+            background-color: rgba(255, 255, 255, 0.98);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: var(--color-text-dark);
+            width: 100%;
+            flex-shrink: 0;
+            margin-bottom: 1rem;
+        }
+
+        .loading-image-sequence-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--color-secondary-grey);
+            border-top: 1px solid var(--color-border);
+            overflow: hidden;
+        }
+
+        .loading-image {
+            position: absolute;
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out; /* Keep consistent transition speed */
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .loading-image.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Column Mapping Section Styling */
+        .mapping-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .mapping-table th, .mapping-table td {
+            padding: 0.8rem;
+            border: 1px solid var(--color-border);
+            text-align: left;
+            vertical-align: middle;
+        }
+        .mapping-table th {
+            background-color: var(--color-secondary-grey);
+            color: var(--color-text-dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .mapping-table td {
+            background-color: white;
+            color: var(--color-text-dark);
+        }
+        .mapping-table select.form-select {
+            border: 1px solid var(--color-border);
+            border-radius: 0.35rem;
+            background-color: var(--color-background-light);
+            color: var(--color-text-dark);
+            font-size: 0.95rem;
+            padding: 0.5rem 0.75rem;
+        }
+        .mapping-table select.form-select:focus {
+            border-color: var(--color-primary-orange);
+            box-shadow: 0 0 0 0.2rem rgba(224, 108, 45, 0.25);
+        }
+
+        /* KPI List Specific Styling */
+        .kpi-list-item {
+            display: flex;
+            flex-direction: row; /* Keep on one line initially */
+            align-items: flex-start; /* Align to top */
+            gap: 1rem; /* Space between checkbox/name and details */
+            background-color: white; /* Active, clean white background */
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow */
+        }
+
+        .kpi-list-item .form-check {
+            flex-shrink: 0; /* Don't let checkbox/label shrink */
+            margin-top: 0.15rem; /* Align checkbox with text */
+        }
+
+        .kpi-list-item .form-check-label {
+            font-size: 1.15rem; /* Slightly smaller than h2 but prominent */
+            font-weight: 600;
+            color: var(--color-text-dark);
+            line-height: 1.3; /* Tighter line height */
+            margin-bottom: 0; /* Remove default margin */
+        }
+
+        .kpi-list-item .kpi-details-content {
+            flex-grow: 1; /* Allow details content to take remaining space */
+            color: var(--color-muted-text);
+            font-size: 0.9rem;
+        }
+
+        .kpi-list-item p {
+            margin-bottom: 0.5rem; /* Space between paragraphs in details */
+        }
+        .kpi-list-item p:last-child {
+            margin-bottom: 0; /* No margin on last paragraph */
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .fs-1 { font-size: 2.2rem !important; }
+            .fs-4 { font-size: 1.6rem !important; }
+            .fs-5 { font-size: 1.1rem !important; }
+            .kpi-result-item p.display-value { font-size: 2rem !important; }
+            .custom-file-input-wrapper { flex-direction: column; align-items: stretch; }
+            .custom-file-label { width: 100%; text-align: center; margin-bottom: 0.75rem; }
+            .file-name-display { margin-left: 0; margin-top: 0.5rem; text-align: center; }
+            .btn-primary, .btn-secondary { width: 100%; margin-left: 0 !important; margin-right: 0 !important; }
+            .kpi-list-item { flex-direction: column; align-items: stretch; gap: 0.5rem; padding: 1rem; } /* Stack on small screens */
+            .kpi-list-item .form-check { margin-bottom: 0.5rem; }
+            .kpi-list-item .form-check-label { font-size: 1.1rem; } /* Adjust font size */
+            .kpi-list-item .kpi-details-content { font-size: 0.85rem; }
+            .creative-loading-spinner { margin: 2.5rem auto; height: auto; }
+            .loading-image-sequence-wrapper { height: 180px; }
+            .mapping-table th, .mapping-table td {
+                font-size: 0.8rem;
+                padding: 0.5rem;
+            }
+            .mapping-table select.form-select {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.5rem;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-100 p-4">
-    <div class="container">
-        <!-- Logo Added Here -->
-        <div class="flex justify-center mb-6">
-            <img src="https://nanacoffeeroasters.com/cdn/shop/files/nana_coffee_roasters_logo_280x.png?v=1613160486" alt="Nana Coffee Roasters Logo" class="h-20 w-auto object-contain">
+<body class="p-4">
+    <div class="container mx-auto p-4 p-md-5">
+        <!-- Main Header & Logo -->
+        <div class="text-center mb-4">
+            <img src="https://nanacoffeeroasters.com/cdn/shop/files/nana_coffee_roasters_logo_280x.png?v=1613160486" alt="Nana Coffee Roasters Logo" class="img-fluid" style="max-height: 90px; filter: drop-shadow(0 0 5px rgba(0,0,0,0.1));">
         </div>
-        <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-8">✨ AI KPI Generator for E-commerce ✨</h1>
+        <h1 class="text-center text-primary mb-4 mb-md-5 fs-1 fw-bold">
+            DIGITAL BREW ANALYTICS
+        </h1>
+        <p class="lead text-secondary text-center px-3 mb-5">
+            Unlock actionable insights from your sales data with AI-driven precision, crafted with a modern, clean aesthetic.
+        </p>
 
-        <div class="mb-6">
-            <label for="csvFile" class="app-file-upload-label">
-                <span class="font-bold">Upload E-commerce CSV Data</span>
-                <p class="text-sm text-gray-600 mt-1">Click here to select your order data (CSV)</p>
-                <input type="file" id="csvFile" accept=".csv" class="hidden">
-            </label>
-        </div>
 
-        <!-- NEW: Column Mapping Section -->
-        <div class="mb-6" id="columnMappingSection" style="display:none;">
-            <label class="block text-base font-medium text-gray-700 mb-3">AI Suggested Column Mapping (Review & Adjust):</label>
-            <div id="columnMappingList" class="app-grid-container">
-                <!-- Mappings will be populated here -->
+        <!-- File Upload Section -->
+        <div id="upload-section" class="card mb-4">
+            <h2 class="fs-4 fw-bold text-dark mb-3">Upload Your E-commerce CSV</h2>
+            <p class="text-secondary mb-3">Upload your full e-commerce dataset CSV file. We will analyze the headers to suggest relevant KPIs.</p>
+
+            <div class="custom-file-input-wrapper mb-3">
+                <input type="file" id="csvFile" accept=".csv" class="custom-file-input" />
+                <label for="csvFile" class="custom-file-label">
+                    <i class="fas fa-file-upload me-2"></i> Choose File
+                </label>
+                <span id="fileNameDisplay" class="file-name-display">No file chosen</span>
             </div>
-            <div class="flex justify-center mt-6 gap-4">
-                <button id="downloadCleanedDataBtn"
-                        class="app-button bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 hidden"
-                        disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-2">
-                      <path fill-rule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5H3Z" clip-rule="evenodd" />
-                    </svg>
-                    <span id="downloadCleanedDataText">Download Cleaned Raw Data</span>
-                    <div id="downloadCleanedDataSpinner" class="spinner ml-2" style="display:none;"></div>
-                </button>
-                <button id="confirmMappingBtn" class="app-button app-button-primary bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                    <span id="confirmMappingText">Confirm Mappings & Get KPIs</span>
-                    <div id="confirmMappingSpinner" class="spinner ml-3" style="display:none;"></div>
-                </button>
-            </div>
-        </div>
 
-        <div class="mb-6" id="kpiSuggestionsSection" style="display:none;">
-            <label class="block text-base font-medium text-gray-700 mb-3">AI Suggested KPIs (Select to Calculate):</label>
-            <div id="kpiCheckboxes" class="app-grid-container">
-                <!-- KPI checkboxes will be populated by JavaScript -->
-            </div>
-        </div>
-
-        <div class="mb-6 mt-8 flex justify-center">
-            <button id="generateKpiExcelBtn"
-                    class="app-button app-button-primary bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    disabled>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-3">
-                    <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.292-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.007Z" clip-rule="evenodd" />
-                </svg>
-                <span id="generateKpiText">Calculate KPIs & Generate Excel</span>
-                <div id="generateKpiSpinner" class="spinner ml-3" style="display:none;"></div>
+            <button id="uploadBtn" class="btn btn-primary d-flex align-items-center justify-content-center w-100 w-md-auto">
+                <i class="fas fa-upload me-2"></i> Upload & Clean Data
             </button>
+            <div id="uploadLoading" class="d-none mt-3 d-flex align-items-center text-primary">
+                <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                Analyzing & cleaning data, please wait...
+            </div>
+            <p id="uploadMessage" class="mt-3 text-danger small"></p>
         </div>
 
-        <div class="mb-6 mt-8" id="statusMessageContainer" style="display:none;">
-            <p id="statusMessage" class="app-status-message"></p>
+        <!-- Column Mapping Section -->
+        <div id="column-mapping-section" class="card mb-4 d-none">
+            <h2 class="fs-4 fw-bold text-dark mb-3">Review Column Mappings</h2>
+            <p class="text-secondary mb-3">The AI has suggested mappings for your columns. Please review and adjust if necessary, then confirm to proceed.</p>
+
+            <div class="table-responsive">
+                <table class="mapping-table">
+                    <thead>
+                        <tr>
+                            <th>Your Column Header</th> <!-- Changed to "Your Column Header" -->
+                            <th>AI Suggested Role</th> <!-- Changed to "AI Suggested Role" -->
+                            <th>Confirm/Change To:</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mappingTableBody">
+                        <!-- Mappings will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-center align-items-center mt-4">
+                <button id="confirmMappingBtn" class="btn btn-primary d-flex align-items-center justify-content-center w-100 w-md-auto me-md-2 mb-3 mb-md-0">
+                    <i class="fas fa-check-circle me-2"></i> Confirm Mappings & Suggest KPIs
+                </button>
+                <button id="downloadCleanedDataBtn" class="btn btn-secondary d-flex align-items-center justify-content-center w-100 w-md-auto">
+                    <i class="fas fa-download me-2"></i> Download Cleaned Data (CSV)
+                </button>
+            </div>
+            <p id="mappingMessage" class="mt-3 text-danger small"></p>
+        </div>
+
+
+        <!-- KPI Selection Section -->
+        <div id="kpi-selection-section" class="card mb-4 d-none">
+            <h2 class="fs-4 fw-bold text-dark mb-3">Select KPIs for Analysis</h2>
+            <p class="text-secondary mb-3">Choose the Key Performance Indicators you're interested in. The AI will calculate and visualize them.</p>
+            <div id="kpiList" class="kpi-list-container p-3 rounded-3 bg-light border border-secondary-subtle">
+                <!-- KPIs will be loaded here -->
+            </div>
+            <button id="analyzeKpiBtn" class="btn btn-primary d-flex align-items-center justify-content-center w-100 w-md-auto mt-3">
+                <i class="fas fa-chart-line me-2"></i> Analyze Selected KPIs
+            </button>
+            <div id="analyzeLoading" class="d-none mt-3 d-flex align-items-center text-primary">
+                <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                Calculating KPIs & generating insights, please wait...
+            </div>
+            <p id="analyzeMessage" class="mt-3 text-danger small"></p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="card d-none">
+            <h2 class="fs-4 fw-bold text-dark mb-3">Your E-commerce Insights</h2>
+            <p class="text-secondary mb-3">Here are the calculated KPIs, their visualizations, and AI-powered interpretations.</p>
+
+            <div id="kpiResults" class="space-y-4">
+                <!-- KPI results, charts, and insights will be loaded here -->
+            </div>
+
+            <button id="exportKpiBtn" class="btn btn-secondary d-flex align-items-center justify-content-center w-100 w-md-auto mt-4">
+                <i class="fas fa-download me-2"></i> Export Calculated KPIs (CSV)
+            </button>
+            <button id="viewCleanedDataBtn" class="btn btn-secondary d-flex align-items-center justify-content-center w-100 w-md-auto mt-3">
+                <i class="fas fa-eye me-2"></i> View Cleaned Data
+            </button>
+            <p id="exportMessage" class="mt-3 text-success small"></p>
+        </div>
+
+        <!-- Creative Loading Spinner/Slideshow -->
+        <div id="creative-loading-spinner" class="creative-loading-spinner d-none">
+            <div class="loading-content">
+                <p class="text-primary fs-5 fw-bold mb-2">Processing your data, please wait...</p>
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <div class="loading-image-sequence-wrapper">
+                <img src="https://nanacoffeeroasters.com/cdn/shop/files/NANA_Web_Element-04_1512x.jpg?v=1647897662" class="loading-image active" alt="Person working on laptop">
+                <img src="https://nanacoffeeroasters.com/cdn/shop/files/NANA_Web_Element-03_1512x.jpg?v=1647897627" class="loading-image" alt="Person pointing to presentation">
+                <img src="https://nanacoffeeroasters.com/cdn/shop/files/NANA_Web_Element-05_29c3b210-6872-4795-82b0-adea7e481deb_1512x.jpg?v=1647897558" class="loading-image" alt="Two people discussing">
+                <img src="https://nanacoffeeroasters.com/cdn/shop/files/NANA_Web_Element-02_1512x.jpg?v=1647897601" class="loading-image" alt="Person on phone">
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Message Modal -->
+    <div id="messageModal" class="modal-custom d-none">
+        <div class="modal-content-custom">
+            <span class="close-button">&times;</span>
+            <h3 id="modalTitle" class="fs-5 fw-bold mb-3 text-dark"></h3>
+            <p id="modalMessage" class="text-secondary"></p>
+            <button id="modalCloseBtn" class="btn btn-primary w-100 mt-3">OK</button>
         </div>
     </div>
 
-    <script type="module">
-        // Backend Proxy Server URL (Update this when you deploy your Flask app!)
-        const BACKEND_PROXY_URL = "http://127.0.0.1:5000";
+    <!-- Cleaned Data Viewer Modal -->
+    <div id="cleanedDataModal" class="modal-custom d-none">
+        <div class="modal-content-custom" style="max-width: 800px;">
+            <span class="close-button" id="closeCleanedDataModal">&times;</span>
+            <h3 class="fs-5 fw-bold mb-3 text-dark">Cleaned Data Preview</h3>
+            <pre id="cleanedDataContent" style="white-space: pre-wrap; word-wrap: break-word; max-height: 400px; overflow-y: auto; background-color: #f8f9fa; padding: 15px; border-radius: 0.5rem; border: 1px solid var(--color-border); color: var(--color-text-dark); font-size: 0.85em;"></pre>
+            <button id="closeCleanedDataModalBtn" class="btn btn-primary w-100 mt-3">Close</button>
+        </div>
+    </div>
 
-        let rawCsvContent = null;
-        let originalCsvHeaders = [];
-        let suggestedKpisStore = [];
-        let confirmedColumnMapping = {};
+    <!-- Bootstrap JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-        // --- DOM Elements ---
-        const csvFileInput = document.getElementById('csvFile');
-        const columnMappingSection = document.getElementById('columnMappingSection');
-        const columnMappingList = document.getElementById('columnMappingList');
+    <script>
+        // Global variables for elements
+        const uploadBtn = document.getElementById('uploadBtn');
+        const csvFile = document.getElementById('csvFile');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const uploadLoading = document.getElementById('uploadLoading');
+        const uploadMessage = document.getElementById('uploadMessage');
+        
+        const columnMappingSection = document.getElementById('column-mapping-section');
+        const mappingTableBody = document.getElementById('mappingTableBody');
         const confirmMappingBtn = document.getElementById('confirmMappingBtn');
-        const confirmMappingText = document.getElementById('confirmMappingText');
-        const confirmMappingSpinner = document.getElementById('confirmMappingSpinner');
+        const mappingMessage = document.getElementById('mappingMessage');
+
+        const kpiSelectionSection = document.getElementById('kpi-selection-section');
+        const kpiList = document.getElementById('kpiList');
+        const analyzeKpiBtn = document.getElementById('analyzeKpiBtn');
+        const analyzeLoading = document.getElementById('analyzeLoading');
+        const analyzeMessage = document.getElementById('analyzeMessage');
+        const resultsSection = document.getElementById('results-section');
+        const kpiResultsDiv = document.getElementById('kpiResults');
+        const exportKpiBtn = document.getElementById('exportKpiBtn');
+        const exportMessage = document.getElementById('exportMessage');
         const downloadCleanedDataBtn = document.getElementById('downloadCleanedDataBtn');
-        const downloadCleanedDataText = document.getElementById('downloadCleanedDataText');
-        const downloadCleanedDataSpinner = document.getElementById('downloadCleanedDataSpinner');
+        const downloadCleanedDataMessage = document.getElementById('downloadCleanedDataMessage');
+        const viewCleanedDataBtn = document.getElementById('viewCleanedDataBtn');
 
-        const kpiSuggestionsSection = document.getElementById('kpiSuggestionsSection');
-        const kpiCheckboxesDiv = document.getElementById('kpiCheckboxes');
-        const generateKpiExcelBtn = document.getElementById('generateKpiExcelBtn');
-        const generateKpiText = document.getElementById('generateKpiText');
-        const generateKpiSpinner = document.getElementById('generateKpiSpinner');
-        const statusMessageContainer = document.getElementById('statusMessageContainer');
-        const statusMessage = document.getElementById('statusMessage');
+        const creativeLoadingSpinner = document.getElementById('creative-loading-spinner');
+        const loadingImages = document.querySelectorAll('.loading-image');
+        let currentImageIndex = 0;
+        let imageSequenceInterval;
 
-        // --- Event Listeners ---
-        csvFileInput.addEventListener('change', handleFileSelect);
-        confirmMappingBtn.addEventListener('click', handleConfirmMapping);
-        downloadCleanedDataBtn.addEventListener('click', handleDownloadCleanedData);
-        kpiCheckboxesDiv.addEventListener('change', updateGenerateKpiButtonState);
-        generateKpiExcelBtn.addEventListener('click', generateKpiExcel);
+        const messageModal = document.getElementById('messageModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const closeButton = document.querySelector('.close-button');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
 
-        // --- Functions ---
+        const cleanedDataModal = document.getElementById('cleanedDataModal');
+        const cleanedDataContent = document.getElementById('cleanedDataContent');
+        const closeCleanedDataModal = document.getElementById('closeCleanedDataModal');
+        const closeCleanedDataModalBtn = document.getElementById('closeCleanedDataModalBtn');
 
-        async function handleFileSelect(event) {
-            const file = event.target.files[0];
+        // Global data state variables
+        let fullCsvContent = null;
+        let cleanedCsvData = null;
+        let aiColumnMappings = {}; // actual_header -> conceptual_role
+        let availableConceptualRolesForDropdown = []; // List of conceptual roles + 'Ignore'
+        let suggestedKPIsData = [];
+        let userConfirmedMappings = {}; // Final actual_header -> conceptual_role mappings by user
+
+
+        // Universal modal closer function
+        function hideAnyModal() {
+            messageModal.classList.add('d-none');
+            cleanedDataModal.classList.add('d-none');
+        }
+
+        // Attach event listeners for modal close buttons
+        closeButton.onclick = hideAnyModal;
+        modalCloseBtn.onclick = hideAnyModal;
+        closeCleanedDataModal.onclick = hideAnyModal;
+        closeCleanedDataModalBtn.onclick = hideAnyModal;
+
+        // Close modal if clicked outside
+        window.onclick = function(event) {
+            if (event.target == messageModal || event.target == cleanedDataModal) {
+                hideAnyModal();
+            }
+        }
+
+        function startImageSequence() {
+            creativeLoadingSpinner.classList.remove('d-none');
+            document.getElementById('upload-section').classList.add('d-none');
+            columnMappingSection.classList.add('d-none');
+            kpiSelectionSection.classList.add('d-none');
+            resultsSection.classList.add('d-none');
+
+            loadingImages.forEach(img => img.classList.remove('active'));
+            currentImageIndex = 0;
+            loadingImages[currentImageIndex].classList.add('active');
+
+            imageSequenceInterval = setInterval(() => {
+                loadingImages[currentImageIndex].classList.remove('active');
+                currentImageIndex = (currentImageIndex + 1) % loadingImages.length;
+                loadingImages[currentImageIndex].classList.add('active');
+            }, 1000);
+        }
+
+        function stopImageSequence() {
+            clearInterval(imageSequenceInterval);
+            creativeLoadingSpinner.classList.add('d-none');
+        }
+
+        csvFile.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                fileNameDisplay.textContent = this.files[0].name;
+            } else {
+                fileNameDisplay.textContent = 'No file chosen';
+            }
+        });
+
+        uploadBtn.addEventListener('click', async () => {
+            const file = csvFile.files[0];
             if (!file) {
+                showMessageModal('Error', 'Please select a CSV file to upload.');
+                return;
+            }
+            if (file.type !== 'text/csv') {
+                showMessageModal('Error', 'Please upload a valid CSV file.');
                 return;
             }
 
-            // Reset UI for new upload
-            columnMappingSection.style.display = 'none';
-            columnMappingList.innerHTML = '';
-            kpiSuggestionsSection.style.display = 'none';
-            kpiCheckboxesDiv.innerHTML = '';
-            generateKpiExcelBtn.disabled = true;
-            statusMessageContainer.style.display = 'none';
-            statusMessage.textContent = '';
-            rawCsvContent = null;
-            originalCsvHeaders = [];
-            suggestedKpisStore = [];
-            confirmedColumnMapping = {};
-            downloadCleanedDataBtn.disabled = true;
-            downloadCleanedDataBtn.classList.add('hidden'); // Ensure hidden on new upload
+            startImageSequence();
+            uploadLoading.classList.remove('d-none');
+            uploadMessage.textContent = '';
+            mappingTableBody.innerHTML = '';
+            kpiList.innerHTML = '';
+            calculatedKPIs = [];
+            cleanedCsvData = null;
+            aiColumnMappings = {};
+            availableConceptualRolesForDropdown = [];
+            suggestedKPIsData = [];
+            userConfirmedMappings = {};
 
-            confirmMappingBtn.disabled = true;
-            confirmMappingText.textContent = 'Analyzing Headers for Mapping...';
-            confirmMappingSpinner.style.display = 'inline-block';
 
             const reader = new FileReader();
-            reader.onload = async function(e) {
-                rawCsvContent = e.target.result;
-                const firstLine = rawCsvContent.split('\n')[0];
-                const headers = firstLine.split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-                originalCsvHeaders = headers;
+            reader.onload = async (e) => {
+                fullCsvContent = e.target.result;
 
                 try {
-                    // Step 1: Get Column Mapping Suggestions from AI
-                    const response = await fetch(`${BACKEND_PROXY_URL}/suggest-column-mapping`, {
+                    const response = await fetch('/upload_csv', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ headers: headers })
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ csv_data: fullCsvContent })
                     });
 
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(`Backend error: ${errorData.error || response.statusText}`);
-                    }
-
                     const result = await response.json();
-                    const suggestedMapping = result.mapping; 
+                    if (response.ok) {
+                        cleanedCsvData = result.cleaned_csv_data;
+                        aiColumnMappings = result.ai_column_mappings; // actual_header -> conceptual_role
+                        availableConceptualRolesForDropdown = result.available_conceptual_roles; // list of conceptual roles + 'Ignore'
 
-                    if (Object.keys(suggestedMapping).length > 0) {
-                        columnMappingList.innerHTML = '';
-                        const uniqueConceptualNames = [...new Set(Object.values(suggestedMapping))]; 
-                        
-                        uniqueConceptualNames.forEach(conceptualName => {
-                            const mappedCsvHeader = Object.keys(suggestedMapping).find(key => suggestedMapping[key] === conceptualName);
+                        // Initialize userConfirmedMappings with AI's suggestions
+                        userConfirmedMappings = { ...aiColumnMappings }; 
 
-                            const mappingItemDiv = document.createElement('div');
-                            mappingItemDiv.className = 'app-grid-item';
-
-                            const conceptualLabel = document.createElement('label');
-                            conceptualLabel.className = 'block text-sm font-semibold text-gray-700 mb-1';
-                            conceptualLabel.textContent = `Map to ${conceptualName}:`;
-                            mappingItemDiv.appendChild(conceptualLabel);
-
-                            const selectElement = document.createElement('select');
-                            selectElement.className = 'app-mapping-select';
-                            selectElement.dataset.conceptualName = conceptualName;
-                            
-                            originalCsvHeaders.forEach(header => {
-                                const option = document.createElement('option');
-                                option.value = header;
-                                option.textContent = header;
-                                if (header === mappedCsvHeader) {
-                                    option.selected = true;
-                                }
-                                selectElement.appendChild(option);
-                            });
-                            mappingItemDiv.appendChild(selectElement);
-                            columnMappingList.appendChild(mappingItemDiv);
-                        });
-                        
-                        columnMappingSection.style.display = 'block';
-                        confirmMappingBtn.disabled = false;
-                        alertUser("AI suggested column mappings. Review and adjust if needed.", "success");
+                        // Ensure aiColumnMappings is a dictionary and not empty
+                        if (aiColumnMappings && typeof aiColumnMappings === 'object' && Object.keys(aiColumnMappings).length > 0) {
+                            renderColumnMappings(aiColumnMappings, availableConceptualRolesForDropdown);
+                            columnMappingSection.classList.remove('d-none');
+                        } else {
+                            showMessageModal('No Mappings Found', 'The AI could not identify relevant column mappings from your CSV headers. Please check your file or try a different one.');
+                            document.getElementById('upload-section').classList.remove('d-none');
+                        }
                     } else {
-                        alertUser("AI could not suggest any column mappings based on your headers. Please check your CSV format.", "warning");
+                        showMessageModal('Upload Error', result.error || 'Failed to process CSV.');
+                        document.getElementById('upload-section').classList.remove('d-none');
                     }
-
                 } catch (error) {
-                    console.error("Error getting column mapping suggestions:", error);
-                    alertUser("Error getting column mapping suggestions: " + error.message, "error");
+                    console.error('Error:', error);
+                    showMessageModal('Network Error', 'Could not connect to the backend. Please try again.');
+                    document.getElementById('upload-section').classList.remove('d-none');
                 } finally {
-                    confirmMappingText.textContent = 'Confirm Mappings & Get KPIs';
-                    confirmMappingSpinner.style.display = 'none';
+                    stopImageSequence();
+                    uploadLoading.classList.add('d-none');
                 }
             };
             reader.readAsText(file);
+        });
+
+        // Renders the column mapping table for user review
+        // aiMappings: actual_header -> conceptual_role
+        // availableConceptualRolesForDropdown: list of conceptual_roles + 'Ignore'
+        function renderColumnMappings(aiMappings, availableConceptualRoles) {
+            mappingTableBody.innerHTML = '';
+            // Sort actual headers (keys of aiMappings) to ensure consistent display order
+            const actualHeadersOrder = Object.keys(aiMappings).sort(); 
+
+            actualHeadersOrder.forEach(actualHeader => {
+                const suggestedConceptualRole = aiMappings[actualHeader]; // AI's suggested conceptual role for this header
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${actualHeader}</strong></td> <!-- Display the actual header -->
+                    <td>${suggestedConceptualRole !== 'Ignore' ? suggestedConceptualRole : 'Not Mapped'}</td> <!-- Display AI's suggested conceptual role -->
+                    <td>
+                        <select class="form-select" data-actual-header="${actualHeader}"> <!-- Use data-actual-header -->
+                            ${availableConceptualRoles.map(conceptualRoleOption => `
+                                <option value="${conceptualRoleOption}" ${conceptualRoleOption === suggestedConceptualRole ? 'selected' : ''}>
+                                    ${conceptualRoleOption}
+                                </option>
+                            `).join('')}
+                        </select>
+                    </td>
+                `;
+                mappingTableBody.appendChild(row);
+                // Attach listener to update userConfirmedMappings (actual_header -> conceptual_role)
+                row.querySelector(`select[data-actual-header="${actualHeader}"]`).addEventListener('change', (event) => {
+                    userConfirmedMappings[actualHeader] = event.target.value;
+                });
+            });
         }
 
-        async function handleConfirmMapping() {
-            confirmedColumnMapping = {};
-            const selectElements = columnMappingList.querySelectorAll('.app-mapping-select');
-            selectElements.forEach(select => {
-                const conceptualName = select.dataset.conceptualName;
-                const actualCsvHeader = select.value;
-                if (conceptualName && actualCsvHeader) {
-                    confirmedColumnMapping[conceptualName] = actualCsvHeader;
+        confirmMappingBtn.addEventListener('click', async () => {
+            startImageSequence();
+            mappingMessage.textContent = '';
+
+            try {
+                if (!cleanedCsvData) {
+                    showMessageModal('Error', 'Cleaned data is missing. Please re-upload your CSV.');
+                    stopImageSequence();
+                    columnMappingSection.classList.remove('d-none');
+                    return;
+                }
+
+                const response = await fetch('/get_kpi_suggestions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        cleaned_csv_data: cleanedCsvData,
+                        user_confirmed_mappings: userConfirmedMappings // actual_header -> conceptual_role
+                    })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    suggestedKPIsData = result.kpis;
+                    if (suggestedKPIsData && suggestedKPIsData.length > 0) {
+                        renderKPISuggestions(suggestedKPIsData);
+                        kpiSelectionSection.classList.remove('d-none');
+                    } else {
+                        showMessageModal('No KPIs Found', 'Based on your column mappings, no relevant KPIs could be identified.');
+                        columnMappingSection.classList.remove('d-none');
+                    }
+                } else {
+                    showMessageModal('Mapping Error', result.error || 'Failed to get KPI suggestions based on mappings.');
+                    columnMappingSection.classList.remove('d-none');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessageModal('Network Error', 'Could not connect to the backend. Please try again.');
+                columnMappingSection.classList.remove('d-none');
+            } finally {
+                stopImageSequence();
+            }
+        });
+
+
+        function renderKPISuggestions(kpis) {
+            kpiList.innerHTML = '';
+            kpis.forEach((kpi, index) => {
+                const kpiItem = document.createElement('div');
+                kpiItem.className = 'kpi-list-item';
+                kpiItem.innerHTML = `
+                    <div class="form-check d-flex align-items-center flex-shrink-0 me-3">
+                        <input class="form-check-input mt-0 me-2" type="checkbox" id="kpi-${index}" value="${kpi.kpi_name}" data-kpi-index="${index}">
+                        <label class="form-check-label fs-5 fw-medium text-dark" for="kpi-${index}">${kpi.kpi_name}</label>
+                    </div>
+                    <div class="kpi-details-content flex-grow-1">
+                        <p class="small fw-semibold mb-1">Equation: <span class="fw-normal fst-italic">${kpi.equation}</span></p>
+                        <p class="small">${kpi.description}</p>
+                        <p class="small"><strong>Mapped Columns:</strong> ${kpi.column_mapping_details.join(', ')}</p>
+                    </div>
+                `;
+                kpiList.appendChild(kpiItem);
+            });
+        }
+
+        analyzeKpiBtn.addEventListener('click', async () => {
+            const selectedKpiInfo = suggestedKPIsData.filter((kpi, index) =>
+                document.getElementById(`kpi-${index}`).checked
+            ).map(kpi => ({
+                kpi_name: kpi.kpi_name,
+                matched_columns: kpi.matched_columns
+            }));
+
+            if (selectedKpiInfo.length === 0) {
+                showMessageModal('No KPIs Selected', 'Please select at least one KPI to analyze.');
+                return;
+            }
+            if (!cleanedCsvData) {
+                showMessageModal('Error', 'No cleaned data available for analysis. Please upload and clean a CSV first.');
+                return;
+            }
+
+            startImageSequence();
+            analyzeLoading.classList.remove('d-none');
+            analyzeMessage.textContent = '';
+            resultsSection.classList.add('d-none');
+            kpiResultsDiv.innerHTML = '';
+            downloadCleanedDataMessage.textContent = '';
+
+            try {
+                const response = await fetch('/analyze_kpis', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        cleaned_csv_data: cleanedCsvData,
+                        user_confirmed_mappings: userConfirmedMappings,
+                        selected_kpis: selectedKpiInfo
+                    })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    calculatedKPIs = result.calculated_kpis;
+                    if (calculatedKPIs && calculatedKPIs.length > 0) {
+                        renderKPIResults(calculatedKPIs);
+                        resultsSection.classList.remove('d-none');
+                    } else {
+                        showMessageModal('No Analysis', 'The AI could not calculate any KPIs from your data. Please ensure your CSV has relevant numerical columns.');
+                        kpiSelectionSection.classList.remove('d-none');
+                    }
+                } else {
+                    showMessageModal('Analysis Error', result.error || 'Failed to analyze KPIs.');
+                    kpiSelectionSection.classList.remove('d-none');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessageModal('Network Error', 'Could not connect to the backend. Please try again.');
+                kpiSelectionSection.classList.remove('d-none');
+            } finally {
+                stopImageSequence();
+                analyzeLoading.classList.add('d-none');
+            }
+        });
+
+        const charts = {};
+
+        function renderKPIResults(kpis) {
+            kpiResultsDiv.innerHTML = '';
+            for (const id in charts) {
+                if (charts[id]) {
+                    charts[id].destroy();
+                }
+            }
+
+            const chartColors = [
+                'rgba(224, 108, 45, 0.7)', /* Primary Orange */
+                'rgba(58, 47, 47, 0.7)',  /* Dark Charcoal/Brown */
+                'rgba(92, 136, 79, 0.7)',  /* Green Accent */
+                'rgba(217, 217, 217, 0.7)',/* Light Gray */
+                'rgba(179, 179, 179, 0.7)',/* Medium Gray */
+                'rgba(242, 242, 242, 0.7)' /* Very light gray */
+            ];
+            const borderColors = [
+                'rgba(224, 108, 45, 1)',
+                'rgba(58, 47, 47, 1)',
+                'rgba(92, 136, 79, 1)',
+                'rgba(217, 217, 217, 1)',
+                'rgba(179, 179, 179, 1)',
+                'rgba(242, 242, 242, 1)'
+            ];
+
+
+            kpis.forEach((kpi, index) => {
+                const kpiResultItem = document.createElement('div');
+                kpiResultItem.className = 'kpi-result-item mb-4';
+                if (kpi.display_value === "N/A" || !kpi.chart_data) {
+                     kpiResultItem.innerHTML = `
+                        <h3 class="fs-4 fw-bold mb-2 text-dark">${kpi.kpi_name}</h3>
+                        <p class="display-value fs-2 fw-bolder mb-3 text-muted">${kpi.display_value}</p>
+                        <p class="ai-insight small lh-base text-danger"><span class="fw-semibold">Error/Insight:</span> ${kpi.interpretation_insight}</p>
+                        <p class="text-secondary small fst-italic">This KPI could not be calculated or visualized, please check data quality or column mappings.</p>
+                    `;
+                } else {
+                    kpiResultItem.innerHTML = `
+                        <h3 class="fs-4 fw-bold mb-2">${kpi.kpi_name}</h3>
+                        <p class="display-value fs-2 fw-bolder mb-3">${kpi.display_value}</p>
+                        <div class="mb-3">
+                            <canvas id="chart-${index}" class="p-3 rounded-3 shadow-sm w-100" style="height: 256px;"></canvas>
+                        </div>
+                        <p class="ai-insight small lh-base"><span class="fw-semibold">AI Insight:</span> ${kpi.interpretation_insight}</p>
+                    `;
+                }
+                kpiResultsDiv.appendChild(kpiResultItem);
+
+                if (kpi.chart_data && kpi.chart_options && kpi.visual_type) {
+                    const ctx = document.getElementById(`chart-${index}`).getContext('2d');
+                    let chartType = kpi.visual_type.toLowerCase();
+                    if (!['bar', 'line', 'pie', 'doughnut', 'polararea', 'radar'].includes(chartType)) {
+                        chartType = 'bar';
+                    }
+
+                    if (kpi.chart_data.datasets && kpi.chart_data.datasets.length > 0) {
+                        kpi.chart_data.datasets.forEach((dataset, dsIndex) => {
+                            dataset.backgroundColor = chartColors[dsIndex % chartColors.length];
+                            dataset.borderColor = borderColors[dsIndex % borderColors.length];
+                            if (chartType === 'bar' || chartType === 'line') {
+                                dataset.borderWidth = 1;
+                            }
+                        });
+                    }
+
+                    if (kpi.unit === 'percent' && kpi.chart_options.scales && kpi.chart_options.scales.y) {
+                         kpi.chart_options.scales.y.ticks = {
+                            callback: function(value) { return value + '%'; },
+                            color: 'var(--color-muted-text)'
+                         };
+                         kpi.chart_options.scales.y.max = 100;
+                    }
+
+
+                    charts[`chart-${index}`] = new Chart(ctx, {
+                        type: chartType,
+                        data: kpi.chart_data,
+                        options: {
+                            ...kpi.chart_options,
+                            plugins: {
+                                ...kpi.chart_options.plugins,
+                                title: {
+                                    ...kpi.chart_options.plugins.title,
+                                    color: 'var(--color-text-dark)'
+                                },
+                                legend: {
+                                    ...kpi.chart_options.plugins.legend,
+                                    labels: {
+                                        color: 'var(--color-muted-text)'
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    ticks: {
+                                        color: 'var(--color-muted-text)'
+                                    },
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.05)'
+                                    }
+                                },
+                                y: {
+                                    ticks: {
+                                        color: 'var(--color-muted-text)'
+                                    },
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.05)'
+                                    },
+                                    beginAtZero: true,
+                                    ...(kpi.unit === 'percent' ? {
+                                        callback: function(value) { return value + '%'; },
+                                        max: 100
+                                    } : {})
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        exportKpiBtn.addEventListener('click', () => {
+            if (calculatedKPIs.length === 0) {
+                showMessageModal('No Data', 'No KPIs have been calculated to export.');
+                return;
+            }
+
+            let csvContent = "KPI_Name,Value,Unit,Time Period (if applicable)\n";
+            calculatedKPIs.forEach(kpi => {
+                if (kpi.is_time_series && kpi.chart_data && kpi.chart_data.labels && kpi.chart_data.datasets && kpi.chart_data.datasets[0]) {
+                    const values = kpi.chart_data.datasets[0].data;
+                    kpi.chart_data.labels.forEach((label, idx) => {
+                        csvContent += `${kpi.kpi_name},${values[idx]},${kpi.unit || ''},${label}\n`;
+                    });
+                } else {
+                    csvContent += `${kpi.kpi_name},${kpi.value},${kpi.unit || ''},\n`;
                 }
             });
 
-            if (Object.keys(confirmedColumnMapping).length === 0) {
-                alertUser("No valid mappings selected. Please select at least one mapping.", "warning");
-                return;
-            }
-
-            // Proceed to get KPI suggestions
-            confirmMappingBtn.disabled = true;
-            confirmMappingText.textContent = 'Getting KPI Suggestions...';
-            confirmMappingSpinner.style.display = 'inline-block';
-            
-            const conceptualHeaders = Object.keys(confirmedColumnMapping);
-
-            try {
-                // Step 2: Get KPI Suggestions from AI using confirmed conceptual headers
-                const response = await fetch(`${BACKEND_PROXY_URL}/suggest-kpis`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ conceptual_headers: conceptualHeaders })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(`Backend error: ${errorData.error || response.statusText}`);
-                }
-
-                const result = await response.json();
-                const suggestedKpis = result.kpis;
-
-                if (suggestedKpis && suggestedKpis.length > 0) {
-                    suggestedKpisStore = suggestedKpis;
-
-                    kpiCheckboxesDiv.innerHTML = '';
-                    suggestedKpis.forEach((kpi, index) => {
-                        const kpiItemDiv = document.createElement('div');
-                        kpiItemDiv.className = 'app-grid-item';
-
-                        const headerDiv = document.createElement('div');
-                        headerDiv.className = 'grid-item-header';
-
-                        const checkboxInput = document.createElement('input');
-                        checkboxInput.type = 'checkbox';
-                        checkboxInput.id = `kpi-${index}`;
-                        checkboxInput.value = kpi.name;
-                        checkboxInput.name = 'kpi';
-                        checkboxInput.className = 'app-grid-item-checkbox';
-
-                        const checkboxLabel = document.createElement('label');
-                        checkboxLabel.htmlFor = `kpi-${index}`;
-                        checkboxLabel.textContent = kpi.name;
-                        checkboxLabel.className = 'app-grid-item-label';
-
-                        const toggleBtn = document.createElement('button');
-                        toggleBtn.className = 'app-toggle-details-btn';
-                        toggleBtn.textContent = 'Show Details';
-                        toggleBtn.onclick = function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            const detailsDiv = this.closest('.app-grid-item').querySelector('.app-item-details');
-                            detailsDiv.classList.toggle('active');
-                            this.textContent = detailsDiv.classList.contains('active') ? 'Hide Details' : 'Show Details';
-                        };
-
-                        headerDiv.appendChild(checkboxInput);
-                        headerDiv.appendChild(checkboxLabel);
-                        headerDiv.appendChild(toggleBtn);
-                        kpiItemDiv.appendChild(headerDiv);
-
-                        const detailsDiv = document.createElement('div');
-                        detailsDiv.className = 'app-item-details';
-
-                        const equationP = document.createElement('p');
-                        equationP.innerHTML = `<strong>Equation:</strong> <code class="bg-gray-100 text-gray-800 px-1 py-0.5 rounded">${kpi.equation}</code>`;
-                        detailsDiv.appendChild(equationP);
-
-                        const engDescP = document.createElement('p');
-                        engDescP.innerHTML = `<strong>English:</strong> ${kpi.english_description}`;
-                        detailsDiv.appendChild(engDescP);
-
-                        const thaiDescP = document.createElement('p');
-                        thaiDescP.innerHTML = `<strong>ภาษาไทย:</strong> ${kpi.thai_description}`;
-                        detailsDiv.appendChild(thaiDescP);
-
-                        kpiItemDiv.appendChild(detailsDiv);
-                        kpiCheckboxesDiv.appendChild(kpiItemDiv);
-                    });
-                    kpiSuggestionsSection.style.display = 'block';
-                    updateGenerateKpiButtonState();
-                    alertUser("AI suggested KPIs. Please select the ones you want to calculate.", "success");
-
-                    // Show the download cleaned data button here after successful KPI suggestions
-                    downloadCleanedDataBtn.classList.remove('hidden'); // Make button visible
-                    downloadCleanedDataBtn.disabled = false; // Enable button
-                } else {
-                    alertUser("AI could not suggest any KPIs based on the mapped headers. Please try different headers.", "warning");
-                }
-
-            } catch (error) {
-                console.error("Error getting KPI suggestions:", error);
-                alertUser("Error getting KPI suggestions: " + error.message, "error");
-            } finally {
-                confirmMappingText.textContent = 'Confirm Mappings & Get KPIs';
-                confirmMappingSpinner.style.display = 'none';
-                confirmMappingBtn.disabled = false;
-            }
-        }
-
-        async function handleDownloadCleanedData() {
-            if (rawCsvContent === null || Object.keys(confirmedColumnMapping).length === 0) {
-                alertUser("Please upload CSV and confirm mappings first.", "warning");
-                return;
-            }
-
-            downloadCleanedDataBtn.disabled = true;
-            downloadCleanedDataText.textContent = 'Downloading...';
-            downloadCleanedDataSpinner.style.display = 'inline-block';
-            statusMessageContainer.style.display = 'block';
-            statusMessage.textContent = 'Preparing cleaned raw data...';
-
-            try {
-                const base64Csv = btoa(unescape(encodeURIComponent(rawCsvContent)));
-
-                const response = await fetch(`${BACKEND_PROXY_URL}/clean-data`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        csv_data: base64Csv,
-                        confirmed_column_mapping: confirmedColumnMapping
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(`Backend error: ${errorData.error || response.statusText}`);
-                }
-
-                const excelBlob = await response.blob();
-                const url = window.URL.createObjectURL(excelBlob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = 'cleaned_raw_data.xlsx';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                a.remove();
-
-                alertUser("Cleaned raw data Excel downloaded successfully!", "success");
-                statusMessage.textContent = 'Cleaned raw data is ready!';
-
-            } catch (error) {
-                console.error("Error downloading cleaned data:", error);
-                alertUser("Error downloading cleaned data: " + error.message, "error");
-                statusMessage.textContent = `Error: ${error.message}`;
-            } finally {
-                downloadCleanedDataText.textContent = 'Download Cleaned Raw Data';
-                downloadCleanedDataSpinner.style.display = 'none';
-                downloadCleanedDataBtn.disabled = false;
-            }
-        }
-
-
-        function updateGenerateKpiButtonState() {
-            const selectedKpis = Array.from(document.querySelectorAll('#kpiCheckboxes input[name="kpi"]:checked'));
-            generateKpiExcelBtn.disabled = selectedKpis.length === 0 || rawCsvContent === null;
-        }
-
-        async function generateKpiExcel() {
-            const selectedKpiNames = Array.from(document.querySelectorAll('#kpiCheckboxes input[name="kpi"]:checked')).map(cb => cb.value);
-
-            const selectedKpisToSend = suggestedKpisStore.filter(kpi => selectedKpiNames.includes(kpi.name));
-
-            if (selectedKpisToSend.length === 0 || rawCsvContent === null || Object.keys(confirmedColumnMapping).length === 0) {
-                alertUser("Please upload CSV, confirm mappings, and select at least one KPI.", "warning");
-                return;
-            }
-
-            generateKpiText.textContent = 'Generating Excel...';
-            generateKpiSpinner.style.display = 'inline-block';
-            generateKpiExcelBtn.disabled = true;
-            statusMessageContainer.style.display = 'block';
-            statusMessage.textContent = 'Calculating KPIs and preparing your Excel file...';
-
-            try {
-                const base64Csv = btoa(unescape(encodeURIComponent(rawCsvContent)));
-
-                const response = await fetch(`${BACKEND_PROXY_URL}/generate-excel`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        csv_data: base64Csv,
-                        selected_kpis: selectedKpisToSend,
-                        confirmed_column_mapping: confirmedColumnMapping
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(`Backend error: ${errorData.error || response.statusText}`);
-                }
-
-                const excelBlob = await response.blob();
-                const url = window.URL.createObjectURL(excelBlob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = 'ecommerce_kpis.xlsx';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                a.remove();
-
-                alertUser("Excel file generated and downloaded successfully!", "success");
-                statusMessage.textContent = 'Excel file is ready!';
-
-            } catch (error) {
-                console.error("Error generating Excel:", error);
-                alertUser("Error generating Excel: " + error.message, "error");
-                statusMessage.textContent = `Error: ${error.message}`;
-            } finally {
-                generateKpiText.textContent = 'Calculate KPIs & Generate Excel';
-                generateKpiSpinner.style.display = 'none';
-                updateGenerateKpiButtonState();
-            }
-        }
-
-        // Custom alert function
-        function alertUser(message, type = "info") {
-            const container = document.querySelector('.container');
-            let alertDiv = document.getElementById('customAlert');
-
-            if (!alertDiv) {
-                alertDiv = document.createElement('div');
-                alertDiv.id = 'customAlert';
-                alertDiv.className = 'fixed top-4 right-4 p-4 rounded-md shadow-lg text-white z-50 transition-transform transform translate-x-full';
-                container.appendChild(alertDiv);
-            }
-
-            alertDiv.textContent = message;
-            alertDiv.style.display = 'block';
-
-            // Set colors based on type
-            if (type === "success") {
-                alertDiv.style.backgroundColor = '#10B981';
-            } else if (type === "warning") {
-                alertDiv.style.backgroundColor = '#F59E0B';
-            } else if (type === "error") {
-                alertDiv.style.backgroundColor = '#EF4444';
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'ecommerce_kpis.csv');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                exportMessage.textContent = 'KPIs exported successfully!';
+                setTimeout(() => exportMessage.textContent = '', 3000);
             } else {
-                alertDiv.style.backgroundColor = '#3B82F6';
+                showMessageModal('Export Error', 'Your browser does not support CSV download directly.');
+            }
+        });
+
+        downloadCleanedDataBtn.addEventListener('click', () => {
+            if (!cleanedCsvData) {
+                showMessageModal('No Data', 'No cleaned data available to download. Please upload and clean a CSV first.');
+                return;
             }
 
-            // Animate in
-            setTimeout(() => {
-                alertDiv.style.transform = 'translateX(0)';
-            }, 50);
+            const blob = new Blob([cleanedCsvData], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'cleaned_ecommerce_data.csv');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                downloadCleanedDataMessage.textContent = 'Cleaned data exported successfully!';
+                setTimeout(() => downloadCleanedDataMessage.textContent = '', 3000);
+            } else {
+                showMessageModal('Export Error', 'Your browser does not support CSV download directly.');
+            }
+        });
 
-            // Animate out and remove
-            setTimeout(() => {
-                alertDiv.style.transform = 'translateX(120%)';
-                alertDiv.addEventListener('transitionend', () => {
-                    alertDiv.remove();
-                }, { once: true });
-            }, 3000);
-        }
-
-        // Initialize state
-        columnMappingSection.style.display = 'none';
-        kpiSuggestionsSection.style.display = 'none';
-        generateKpiExcelBtn.disabled = true;
-        statusMessageContainer.style.display = 'none';
-        downloadCleanedDataBtn.disabled = true;
-        downloadCleanedDataBtn.classList.add('hidden'); // Ensure hidden on load
+        viewCleanedDataBtn.addEventListener('click', () => {
+            if (!cleanedCsvData) {
+                showMessageModal('No Data', 'No cleaned data available to view. Please upload and analyze a CSV first.');
+                return;
+            }
+            cleanedDataContent.textContent = cleanedCsvData;
+            cleanedDataModal.classList.remove('d-none');
+        });
 
     </script>
 </body>
